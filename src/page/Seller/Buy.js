@@ -116,8 +116,8 @@ const Buy = () => {
                 <thead
                   class="border-b border-neutral-200 font-medium dark:border-white/10">
                   <tr className='text-center'>
-                    <th scope="col" class="px-0 py-4">Name</th>
-                    <th scope="col" className="pl-6-0 py-4">Price</th>
+                    <th scope="col" class="px-0 py-4">Code</th>
+                    <th scope="col" className="pl-6-0 py-4">Name</th>
                     <th scope="col" class="px-6 py-4">Price Order</th>
                     <th scope="col" class="px-0 py-4">Quantity</th>
                     <th scope="col" class="px-6 py-4">Estimate</th>
