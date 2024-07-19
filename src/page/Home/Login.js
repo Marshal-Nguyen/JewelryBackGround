@@ -4,7 +4,7 @@ import { faRotateLeft, faEyeSlash, faEye, faSpinner } from '@fortawesome/free-so
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
- import backgroundVideo from '../../assets/0719.mp4';
+import backgroundVideo from '../../assets/0719.mp4';
 
 export default function LoginToStore() {
   const [username, setUsername] = useState('');
@@ -56,7 +56,7 @@ export default function LoginToStore() {
   };
 
   return (
-    <div className="h-screen w-full flex items-center justify-center relative">
+    <div className="h-screen w-full flex flex-col gap-2 items-center justify-center relative">
       <video
         className="absolute top-0 left-0 w-full h-full object-cover"
         src={backgroundVideo}
@@ -105,7 +105,40 @@ export default function LoginToStore() {
           Login
         </button>
       </div>
-
+      <div className="bg-white bg-opacity-20 flex justify-center backdrop-blur-md p-8 rounded-lg shadow-lg w-full max-w-md">
+       
+            <table class="w-full bg-opacity-5 bg-white border-collapse border border-gray-300">
+              <thead>
+                <tr class="bg-gray-100 bg-opacity-5 ">
+                  <th class="border border-gray-300 px-4 py-2">Role</th>
+                  <th class="border border-gray-300 px-4 py-2">UserName</th>
+                  <th class="border border-gray-300 px-4 py-2">PassWord</th>
+                </tr>
+              </thead>
+              <tbody className=' text-white'>
+                <tr>
+                  <td class="border border-gray-300 px-4 py-2">Admin</td>
+                  <td class="border border-gray-300 px-4 py-2">admin_user</td>
+                  <td class="border border-gray-300 px-4 py-2">admin_password</td>
+                </tr>
+                <tr class="bg-gray-100 bg-opacity-5">
+                  <td class="border border-gray-300 px-4 py-2">Seller</td>
+                  <td class="border border-gray-300 px-4 py-2">seller_user1</td>
+                  <td class="border border-gray-300 px-4 py-2">seller_password1</td>
+                </tr>
+                <tr class="bg-gray-100 bg-opacity-5">
+                  <td class="border border-gray-300 px-4 py-2">Cashier</td>
+                  <td class="border border-gray-300 px-4 py-2">cashier_user1</td>
+                  <td class="border border-gray-300 px-4 py-2">cashier_password1</td>
+                </tr>
+                <tr class="bg-gray-100 bg-opacity-5">
+                  <td class="border border-gray-300 px-4 py-2">Manager</td>
+                  <td class="border border-gray-300 px-4 py-2">manager_user1</td>
+                  <td class="border border-gray-300 px-4 py-2">manager_password1</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
     </div>
   );
 }
