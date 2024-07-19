@@ -59,6 +59,28 @@ const PaymentResult = () => {
             console.error('Error updating special discount:', error);
         }
     }
+    const Mail = async () => {
+        let res = await axios.get(`https://jssatsproject.azurewebsites.net/api/sellorder/getbyid?id=${orderId}`)
+        const resdata = res.data.data[0]
+        let customer = await axios.get(`https://jssatsproject.azurewebsites.net/api/Customer/Search?searchTerm=${resdata.customerPhoneNumber}`)
+        let data = {
+            toAddress: customer.data.data[0].email,
+            subject:'Electronic invoice of Jewelry Store',
+            sellOrderId: orderId,
+            totalPrice: resdata.finalAmount,
+            promotionDiscount:calculateTotalPromotionValue(resdata),
+            pointDiscount: resdata.discountPoint,
+        }
+        console.log('RES',resdata)
+        console.log('CUS',customer)
+        console.log('mail',data)
+        await axios.post('https://jssatsproject.azurewebsites.net/api/Mail/Send', data);
+    }
+    function calculateTotalPromotionValue(item) {
+        return item.sellOrderDetails.reduce((total, orderDetail) => {
+          return total + (orderDetail.unitPrice * orderDetail.promotionRate);
+        }, 0);
+      }
     useEffect(() => {
 
         if (vnp_ResponseCode === '00') {
@@ -69,12 +91,14 @@ const PaymentResult = () => {
             CreateGuarantee()
             UpdateSpecialDiscount()
             UpdatePoint()
+            Mail()
 
         } else {
             setMessage(`Payment failed. Error code: ${vnp_ResponseCode}`);
             toast.error(`Payment failed. Error code: ${vnp_ResponseCode}`);
             CreatePaymentDetail('failed')
             UpdatePayment('failed')
+         
         }
     }, [location]);
 

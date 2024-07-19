@@ -7,11 +7,11 @@ import { addProduct } from '../../store/slice/cardSilec'
 import Modal from 'react-modal';
 import axios from 'axios'
 import ReactPaginate from 'react-paginate';
-import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai"; // icons form react-icons
+import { AiFillLeftCircle, AiFillRightCircle,AiOutlineQrcode } from "react-icons/ai"; // icons form react-icons
 import { IconContext } from "react-icons";
 import { toast } from 'react-toastify'
-
-
+import QRCode from "react-qr-code";
+import ScannerComponent from '../../components/ScannerComponent '
 const Ring = () => {
   const dispatch = useDispatch()
 
@@ -25,6 +25,7 @@ const Ring = () => {
 
   const [totalProduct, setTotalProduct] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
+  const [showScanner, setShowScanner] = useState(false);
 
   const handlePageClick = (event) => {
     getRing(+event.selected + 1);
@@ -134,14 +135,27 @@ const Ring = () => {
       toast.error('Failed to fetch customers');
     }
   };
-
+  useEffect(() => {
+    if (searchTerm) {
+      getRingSearch(searchTerm, 1);
+    }
+  }, [searchTerm]);
+  const handleQRScan = (result) => {
+    setSearchTerm(result); // Update searchTerm with the QR scan result
+    console.log('Kết quả quét QR:', result);
+  };
 
   return (<>
     <div className='h-[70px] mt-5 mb-2 w-full'>
 
-      <form className="max-w-md mx-auto">
+    <form className=" max-w-md mx-auto relative">
+    {showScanner &&
+            <div className='absolute w-[30%] left-[102%] bottom-[-5px] z-50 '>
+              <ScannerComponent onQRScan={handleQRScan} isScanning={showScanner} />
+            </div>
+          }
         <div className="relative">
-          <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+        <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
             <svg
               className="w-4 h-4 text-gray-500 dark:text-gray-400"
               aria-hidden="true"
@@ -162,13 +176,19 @@ const Ring = () => {
             type="search"
             id="default-search"
             className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Search Item, ID in here..."
+            placeholder="Tìm kiếm sản phẩm, ID ở đây..."
             required
             value={searchTerm}
             onChange={handleSearch}
           />
-        </div>
-      </form>
+          <div 
+            className="absolute inset-y-0 right-0 flex items-center p-4 cursor-pointer"
+            onClick={() => setShowScanner(!showScanner)}
+          >
+            <AiOutlineQrcode size={24} />
+          </div>
+          </div>
+        </form>
 
       <div className='h-[79vh] overflow-y-auto mt-3 flex-col justify-center mx-auto'>
         <div className='grid grid-cols-4 mt-1 w-fit space-x-2 mx-auto'>
@@ -223,6 +243,14 @@ const Ring = () => {
                 <h3 className="text-md font-semibold text-gray-900">
                 {selectedJewelry.name} - {selectedJewelry.stalls.name}
                 </h3>
+                <div className='h-auto ml-4 mr-6 my-auto max-w-[30px] w-full'>
+                  <QRCode
+                    size={100}
+                    style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                    value={selectedJewelry.code}
+                    viewBox={`0 0 256 256`}
+                  />
+                </div>
                 <a className='cursor-pointer text-black text-2xl py-0' onClick={closeModal}>&times;</a>
               </div>
               <div className="overflow-x-auto shadow-md">

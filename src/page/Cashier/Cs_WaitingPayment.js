@@ -288,7 +288,7 @@ const Cs_WaitingPayment = () => {
       customerId: item.customerId,
       createDate: createDate,
       amount: item.amount,
-      returnUrl: 'http://localhost:3000/cs_public/payment-result'
+      returnUrl: 'http://localhost:3002/cs_public/payment-result'
     };
     console.log('VNPay request', data);
 
@@ -616,18 +616,21 @@ const Cs_WaitingPayment = () => {
                   <div className='col-start-1 col-span-2 flex pl-[5px]'>Item</div>
                   <div className='col-start-3 ml-6 flex justify-start'>Price</div>
                 </div>
-                <div id='screenSeller' className='grid-cols-3 h-[45%] overflow-y-auto'>
-                  {item.sellOrderDetails.map((orderDetail, index) => (
-                    <div className='grid grid-cols-3 mx-[10px] border-b-black pb-[2px]'>
-                      <div className='col-start-1 col-span-2 flex pl-[5px] items-center text-[12px]'>{orderDetail.productName}</div>
-                      <div className='col-start-3 gap-1 flex justify-end text-[12px]'>
-                        <span>{formatPrice(orderDetail.unitPrice - orderDetail.unitPrice * orderDetail.promotionRate)}</span>
-                        <span className='text-red-500 flex justify-center text-[12px]'>{''}x{orderDetail.quantity}</span>
-                      </div>
-                      <span className='text-[12px]'>(-{formatPrice(orderDetail.unitPrice * orderDetail.promotionRate)})</span>
+                <div id='screenSeller' className='relative grid-cols-3 h-[45%] overflow-y-auto'>
+                {item.sellOrderDetails.map((orderDetail, index) => (
+                  <div key={index} className='grid grid-cols-3 mx-[10px] border-b-black pb-[2px]'>
+                    <div className='col-start-1 col-span-2 flex pl-[5px] items-center text-[12px]'>{orderDetail.productName}</div>
+                    <div className='col-start-3 gap-1 flex justify-end text-[12px]'>
+                      <span>{formatPrice(orderDetail.unitPrice - orderDetail.unitPrice * orderDetail.promotionRate)}</span>
+                      <span className='text-red-500 flex justify-center text-[12px]'>{' x '}{orderDetail.quantity}</span>
                     </div>
-                  ))}
-                </div>
+                    <span className='text-[12px]'>(-{formatPrice(orderDetail.unitPrice * orderDetail.promotionRate)})</span>
+                  </div>
+                ))}
+                 <div className='absolute bottom-0 mt-2 bg-white rounded-md shadow-md w-full flex justify-center overflow-x-auto'>
+                {item.description}
+              </div>
+              </div>
 
                 <div className='border border-x-0 border-b-0 mx-[15px] border-t-black pt-2 flex justify-between'>
                   <div className='font-bold'>Total</div>
@@ -761,9 +764,7 @@ const Cs_WaitingPayment = () => {
                     )}
                   </Popup>
                 </div>
-                <div className='mt-2 bg-white rounded-md shadow-md w-full flex justify-center overflow-x-auto'>
-                  {item.description}
-                </div>
+             
               </div>
             )
           })}

@@ -63,9 +63,13 @@ const OnprocessSeller = () => {
     return () => clearInterval(interval);
   }, []);
 
-  function formatPrice(price) {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  }
+  const formatPrice = (value) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+      minimumFractionDigits: 0
+    }).format(value);
+  };
 
   const [createDate, setCreateDate] = useState(new Date().toISOString());
 
@@ -234,7 +238,7 @@ const OnprocessSeller = () => {
                 <div className='col-start-1 col-span-2 flex pl-[5px]'>Item</div>
                 <div className='col-start-3 ml-6 flex justify-start'>Price</div>
               </div>
-              <div id='screenSeller' className='grid-cols-3 h-[45%] overflow-y-auto'>
+              <div id='screenSeller' className='relative grid-cols-3 h-[45%] overflow-y-auto'>
                 {item.sellOrderDetails.map((orderDetail, index) => (
                   <div key={index} className='grid grid-cols-3 mx-[10px] border-b-black pb-[2px]'>
                     <div className='col-start-1 col-span-2 flex pl-[5px] items-center text-[12px]'>{orderDetail.productName}</div>
@@ -245,6 +249,9 @@ const OnprocessSeller = () => {
                     <span className='text-[12px]'>(-{formatPrice(orderDetail.unitPrice * orderDetail.promotionRate)})</span>
                   </div>
                 ))}
+                 <div className='absolute bottom-0 mt-2 bg-white rounded-md shadow-md w-full flex justify-center overflow-x-auto'>
+                {item.description}
+              </div>
               </div>
               <div className='mx-[15px] flex justify-between'>
                 <div className='font-bold'>Total</div>
@@ -260,9 +267,6 @@ const OnprocessSeller = () => {
               </div>
               <div className=' flex justify-around'>
                 <button type='button' onClick={() => handleComplete(item.id)} className="m-0 py-2 border border-[#ffffff] bg-[#469086] text-white px-10 rounded-md transition duration-200 ease-in-out hover:bg-[#5fa39a7e] active:bg-[#ffff] focus:outline-none">Completed</button>
-              </div>
-              <div className='mt-2 bg-white rounded-md shadow-md w-full flex justify-center overflow-x-auto'>
-                {item.description}
               </div>
             </div>
           ))}

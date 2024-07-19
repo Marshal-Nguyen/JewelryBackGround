@@ -62,9 +62,13 @@ const Cs_CompleteBuy = () => {
     return () => clearInterval(interval);
   }, []);
 
-  function formatPrice(price) {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  }
+  const formatPrice = (value) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+      minimumFractionDigits: 0
+    }).format(value);
+  };
 
   const [createDate, setcreateDate] = useState(new Date().toISOString())
 
