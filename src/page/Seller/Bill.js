@@ -60,91 +60,19 @@ const Bill = () => {
       toast.error('Failed to fetch rings');
     }
   };
-  const captureAndSendEmail = async (event) => {
-    event.preventDefault();
-    console.log("Starting captureAndSendEmail function");
-    console.log("Email to send to:", email);
-  
+  const captureAndSendEmail = async () => {
     try {
       const node = document.getElementById('bill-content');
-      if (!node) {
-        throw new Error('Bill content element not found');
-      }
-      console.log('Bill content element found');
-  
-      // Generate HTML content
-      const htmlContent = `
-        <html>
-          <head>
-            <style>
-              body {
-                font-family: Arial, sans-serif;
-              }
-            </style>
-          </head>
-          <body>
-            <h2>Dear valued customer {{email_from}},</h2>
-            <p>We would like to express our heartfelt gratitude for your recent purchase at FPT Gold and Jewelry Store. It's an honor to have you as our customer, and we're thrilled that you've chosen to shop with us.</p>
-            <p>Thank you for trusting us with your jewelry needs. We hope you're enjoying your new purchase and that it brings you joy and happiness.</p>
-            <p>Best regards, FPT Gold and Jewelry Store team</p>
-            <br />
-            <h2>Bill Details:</h2>
-            <table border="1" cellpadding="5" cellspacing="0">
-              <tr>
-                <th>N.O</th>
-                <th>Product Code</th>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Promotion (%)</th>
-                <th>Unit Price</th>
-                <th>Value</th>
-              </tr>
-              ${Bill.sellOrderDetails.map((item, index) => {
-                return `
-                  <tr>
-                    <td>${index + 1}</td>
-                    <td>${item.productCode}</td>
-                    <td>${item.productName}</td>
-                    <td>${item.quantity}</td>
-                    <td>${formatPrice(item.unitPrice * item.promotionRate)}</td>
-                    <td>${formatPrice(item.unitPrice)}</td>
-                    <td>${formatPrice(item.unitPrice * item.quantity * (1 - item.promotionRate))}</td>
-                  </tr>
-                `;
-              }).join('')}
-            </table>
-            <p>Total Value: ${formatPrice(Bill.finalAmount)}</p>
-            <p>Discount Promotion: ${formatPrice(totalPromotionValue)}</p>
-            <p>Discount Rate: ${Bill.specialDiscountRate}</p>
-          </body>
-        </html>
-      `;
-  
-      // Create a template parameter object
-      const templateParams = {
-        email_from: email,
-        message: htmlContent,
-      };
-  
-      // Send email using EmailJS
-      const emailResponse = await emailjs.send(
-        "service_ruiy2f7",
-        "template_7lu84zn",
-        templateParams,
-        '4y4GyC3_JZ8nJa4RU',
-        {
-          contentType: 'text/html', // Add this line
-        }
-      );
-  
-      console.log('EmailJS response:', emailResponse);
-  
-      if (emailResponse.status === 200 || emailResponse.text === 'OK') {
-        toast.success('Email sent successfully!');
-      } else {
-        console.log('Failed to send email, EmailJS response:', emailResponse);
-        toast.error('Failed to send email');
-      }
+      node.style.height = 'auto'; // Increase node height before capturing the image
+      const dataUrl = await toPng(node); // Capture as PNG
+      node.style.height = ''; // Reset node height
+
+      const blob = await fetch(dataUrl).then(res => res.blob()); // Create a blob from data URL
+      saveAs(blob, 'invoice.png'); // Save as file using FileSaver.js
+
+      const formData = new FormData();
+      formData.append('image', blob, 'invoice.png'); // Append blob to FormData
+
     } catch (error) {
       console.error('Error capturing and sending email:', error);
       toast.error('Failed to capture and send email');
@@ -181,7 +109,7 @@ const Bill = () => {
                 <p className="text-sm mb-1">Tax code: <span className='font-bold ml-2'>0101248141</span></p>
                 <p className="text-sm mb-1">PhoneNumber:<span className='font-bold ml-2'>028.35118006</span></p>
               </div>
-              <IoCameraOutline onClick={openModal} className='cursor-pointer absolute top-5 right-16 bg-black text-white w-10 h-10 p-3 rounded-[50%]' />
+              <IoCameraOutline onClick={captureAndSendEmail} className='cursor-pointer absolute top-5 right-16 bg-black text-white w-10 h-10 p-3 rounded-[50%]' />
              <Link to='/public/searchInvoice/onprocessSeller'><CiLogout className='cursor-pointer absolute top-5 right-3 bg-[#264e93] text-white w-10 h-10 p-3 rounded-[50%]' /></Link> 
             </div>
             <div className="bill border border-black p-4 ">
@@ -346,47 +274,7 @@ const Bill = () => {
         </div>
 
       )}
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Subscribe Modal"
-        className="flex flex-col items-center justify-center"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-      >
-        <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            Subscribe to Our Newsletter
-          </h2>
-          <form className="flex flex-col">
-            <input
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              type="email"
-              name='email_from'
-              id='emailFrom'
-              className="bg-gray-100 text-gray-800 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
-              placeholder="Enter your email address"
-            />
-            <textarea
-              name='message'
-              id='message'
-              className="bg-gray-100 text-gray-800 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
-              placeholder=""
-            />
-            <button
-              onClick={(event) => {
-                captureAndSendEmail(event);
-                closeModal();
-              }}
-              type="button"
-              className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-600 transition ease-in-out duration-150"
-            >
-              Subscribe
-            </button>
-          </form>
-
-        </div>
-      </Modal>
+   
     </>
   );
 };
