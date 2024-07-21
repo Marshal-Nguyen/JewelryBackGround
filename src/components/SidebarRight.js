@@ -96,6 +96,7 @@ const SidebarRight = () => {
         setCustomerPhoneNumber()
         setTotalInvoice(0);
         setpoint(0)
+        setUsePoint(0)
         toast.success('Success');
         // Update the invoice list immediately
         getListOrder(1);
@@ -151,11 +152,6 @@ const SidebarRight = () => {
       });
       setTotal(totalValue);
       setDiscount(totalDiscount);
-
-      console.log("Total Value:", totalValue);
-      console.log("Total Discount:", totalDiscount);
-      console.log("Point:", point);
-      console.log("Special Discount Rate:", specialDiscountRate);
 
       const invoiceTotal = (totalValue - totalDiscount - usePoint) * (1 - specialDiscountRate);
       // const invoiceTotal = totalValue 
