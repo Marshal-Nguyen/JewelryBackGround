@@ -235,6 +235,7 @@ const BuyOut = () => {
               <input
                 className="w-full h-14 text-center bg-transparent focus:outline-none text-black"
                 type="number"
+                min='1'
                 placeholder="Material Weight"
                 value={materialWeight}
                 onChange={(e) => setMaterialWeight(e.target.value)}

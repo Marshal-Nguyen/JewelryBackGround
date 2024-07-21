@@ -34,6 +34,7 @@ const SidebarRight = () => {
   const [point, setpoint] = useState(0);
   const [IdTemPo, setIdTemPo] = useState();
   const [TotalInvoice, setTotalInvoice] = useState(0);
+  const [usePoint, setUsePoint] = useState(0)
 
   const dispatch = useDispatch();
   const CartProduct = useSelector(state => state.cart.CartArr);
@@ -131,8 +132,9 @@ const SidebarRight = () => {
     }
     try {
       const res = await axios.post('https://jssatsproject.azurewebsites.net/api/Point/GetPointForOrder', data)
-      console.log(res.data)
-      setpoint(res.data)
+      console.log('Point',res.data.data)
+      setpoint(res.data.data.applicablePoint)
+      setUsePoint(res.data.data.applicablePoint*res.data.data.pointToCurrencyRate)
       toast.success('Point Success')
     } catch (error) {
       toast.error('Fail')
@@ -155,7 +157,7 @@ const SidebarRight = () => {
       console.log("Point:", point);
       console.log("Special Discount Rate:", specialDiscountRate);
 
-      const invoiceTotal = (totalValue - totalDiscount - point) * (1 - specialDiscountRate);
+      const invoiceTotal = (totalValue - totalDiscount - usePoint) * (1 - specialDiscountRate);
       // const invoiceTotal = totalValue 
 
       console.log("Calculated Total Invoice:", invoiceTotal);
@@ -626,7 +628,7 @@ const SidebarRight = () => {
               <button className='m-0 p-0 px-4 w-fit bg-[#2b4fc6dc]' onClick={() => getDisCountPoint(total - discount, CusPoint.phone)} type='button'>Use</button>
             </div>
             <div>
-              <span>{formatPrice(point)}</span>
+              <span>{formatPrice(usePoint)}</span>
             </div>
           </div>
           <div className='row-start-4 font-mono'>Special Discount:</div>

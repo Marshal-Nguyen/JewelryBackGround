@@ -259,134 +259,6 @@ const Cs_OnProcessBuy = () => {
             console.error('Error invoice:', error);
         }
     };
-    const showBill = (item) => {
-        confirmAlert({
-            customUI: ({ onClose }) => {
-                return (
-                    <div>
-                        <button onClick={onClose} className="btn btn-primary">Close</button>
-
-                        <div className='col-start-2 my-auto mx-3 h-[100vh] overflow-y-auto'>
-                            <div className="bg-white shadow-lg w-full border border-black rounded-lg">
-                                <div className="pt-4 mb-4 grid grid-cols-3 rounded-t">
-                                    <div className='h-auto mx-2 my-auto max-w-[64px] w-full'>
-                                        <QRCode
-                                            size={256}
-                                            style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                                            value={item.id}
-                                            viewBox={`0 0 256 256`}
-                                        />
-                                    </div>
-                                    <div className='flex flex-col items-center justify-center'>
-                                        <h1 onClick={closeModal} className="cursor-pointer text-xl font-semibold text-gray-900">
-                                            JEWELRY BILL OF SALE
-                                        </h1>
-                                        <h2 className='text-center text-gray-600'>
-                                            {currentTime}
-                                        </h2>
-                                    </div>
-                                    <div></div>
-                                </div>
-                                <div className='border border-black mx-4 my-2 p-4'>
-                                    {/* Customer Information */}
-                                    <div className='flex justify-between mb-4'>
-                                        <div className='flex items-center'>
-                                            <h1 className='font-semibold'>Customer Name:</h1>
-                                            <h2 className='text-black ml-2'>{item.customerName}</h2>
-                                        </div>
-                                        <div className='flex items-center'>
-                                            <h1 className='font-semibold'>Phoner Number:</h1>
-                                            <h2 className='text-black ml-2'>
-                                                {item.customerPhoneNumber}
-                                            </h2>
-                                        </div>
-                                    </div>
-                                    <div className='flex items-center mb-4'>
-                                        <h1 className='font-semibold'>Address:</h1>
-                                        <h2 className='text-black ml-2'>
-                                            {[...Array(50)].map((_, index) => (
-                                                <span key={index}>.</span>
-                                            ))}
-                                        </h2>
-                                    </div>
-                                    <div className='flex items-center mb-4'>
-                                        <h1 className='font-semibold'>Payment methods:</h1>
-                                        <h2 className='text-black ml-2'>
-                                            {ChosePayMethod}
-                                        </h2>
-                                    </div>
-                                    {/* Product Information */}
-                                    <div className='border border-black mt-5 overflow-hidden'>
-                                        <table className="min-w-full text-left text-sm font-light text-gray-900">
-                                            <thead className="border-b bg-gray-100 font-medium">
-                                                <tr>
-                                                    <th scope="col" className="px-4 py-4 text-center">N.O</th>
-                                                    <th scope="col" className="px-6 py-4 text-center">Name Product</th>
-                                                    <th scope="col" className="px-4 py-4 text-center">Quantity</th>
-                                                    <th scope="col" className="px-6 py-4 text-center">Cost</th>
-                                                    <th scope="col" className="px-6 py-4 text-center">Value</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {item.sellOrderDetails && item.sellOrderDetails.length > 0 && item.sellOrderDetails.map((p) => {
-                                                    return (
-                                                        <tr className="border-b bg-gray-50">
-                                                            <td className="whitespace-nowrap px-4 py-4 text-center font-medium">1</td>
-                                                            <td className="whitespace-nowrap px-6 py-4">{p.productName}</td>
-                                                            <td className="whitespace-nowrap px-4 py-4 text-center">{formatPrice(p.quantity)}</td>
-                                                            <td className="whitespace-nowrap px-6 py-4 text-right">{formatPrice(p.unitPrice)}</td>
-                                                            <td className="whitespace-nowrap px-6 py-4 text-right">{formatPrice(p.quantity * p.unitPrice)}</td>
-                                                        </tr>)
-                                                })}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div className='border border-black mt-2 p-4'>
-                                        <div className='flex justify-between'>
-                                            <h1 className='font-bold'>Total Value</h1>
-                                            <h1>{formatPrice(item.finalAmount)}</h1>
-                                        </div>
-                                    </div>
-                                    <div className='h-40 flex justify-around items-center'>
-                                        <div className='text-center '>
-                                            <h1 className='font-bold'>Customer</h1>
-                                            <h1 className='pb-2'>(Sign, write full name)</h1>
-                                            <SignatureCanvas penColor='black'
-                                                canvasProps={{
-                                                    width: 300, height: 100, className: 'sigCanvas', style: {
-                                                        // border: '1px solid black', 
-                                                        backgroundColor: '#f0f0f085'
-                                                    }
-                                                }} />
-                                        </div>
-                                        <div className='text-center '>
-                                            <h1 className='font-bold'>Staff</h1>
-                                            <h1 className='pb-2'>(Sign, write full name)</h1>
-                                            <SignatureCanvas penColor='black'
-                                                canvasProps={{
-                                                    width: 300, height: 100, className: 'sigCanvas', style: {
-                                                        // border: '2px solid black', 
-                                                        backgroundColor: '#f0f0f085'
-                                                    }
-                                                }} />
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                )
-            },
-        });
-    };
-
-
-
-
-
-
 
     const handleCancle = async (id) => {
         confirmAlert({
@@ -400,9 +272,9 @@ const Cs_OnProcessBuy = () => {
                                 <button
                                     onClick={async () => {
                                         try {
-                                            const res = await axios.put(`https://jssatsproject.azurewebsites.net/api/BuyOrder/UpdateStatus?id=${id}`, {
-                                                status: 'cancelled',
-                                                createDate: currentTime,
+                                            const res = await axios.put(`https://jssatsproject.azurewebsites.net/api/BuyOrder/UpdateStatus?orderId=${id}`, {
+                                                newStatus: 'cancelled'
+                                             
                                             });
                                             console.log(res.data)
                                             toast.success('Success');
