@@ -63,16 +63,21 @@ const Bill = () => {
   const captureAndSendEmail = async () => {
     try {
       const node = document.getElementById('bill-content');
+      const node1 = document.getElementById('policy');
       node.style.height = 'auto'; // Increase node height before capturing the image
+      node1.style.height = 'auto';
       const dataUrl = await toPng(node); // Capture as PNG
+      const dataUrl1 = await toPng(node1); 
       node.style.height = ''; // Reset node height
-
+      node1.style.height = '';
       const blob = await fetch(dataUrl).then(res => res.blob()); // Create a blob from data URL
+      const blob1 = await fetch(dataUrl1).then(res => res.blob());
       saveAs(blob, 'invoice.png'); // Save as file using FileSaver.js
-
+      saveAs(blob1, 'policy.png');
       const formData = new FormData();
+      const formData1 = new FormData();
       formData.append('image', blob, 'invoice.png'); // Append blob to FormData
-
+      formData1.append('image', blob1, 'policy.png');
     } catch (error) {
       console.error('Error capturing and sending email:', error);
       toast.error('Failed to capture and send email');
@@ -238,11 +243,11 @@ const Bill = () => {
           <div id='policy' className=' col-span-4 flex flex-col gap-3 items-center justify-center'>
             <div className=' w-[70%] h-[225x] bg-[#211758] p-2'>
               <div className='border border-[#f2f2f2] '>
-                <div className='relative w-[full] flex flex-col justify-center items-center p-3'>
-                  <img className='w-[30%] object-cover' src={logo_v2_seller} />
-                  <span className='absolute bottom-[-5px] font-dancing text-3xl text-[#e8cd45]'>Jewelry Store</span>
+                <div className='relative w-[full] flex flex-col justify-center items-center'>
+                  <img className='w-[30%] object-cover' src={logo_v2_seller} />                 
                 </div>
-                <h1 className='text-center font-thin text-2xl  text-[#fff] py-5 '> WARRANTY CARD </h1>
+                <h1 className='font-dancing text-3xl text-center w-full text-[#e8cd45]'>Jewelry Store</h1>
+                <h1 className='text-center font-thin text-2xl  text-[#fff] pb-5 '> WARRANTY CARD </h1>
               </div>
             </div>
             {Bill && Bill.sellOrderDetails && Bill.sellOrderDetails.map((item, index) => {

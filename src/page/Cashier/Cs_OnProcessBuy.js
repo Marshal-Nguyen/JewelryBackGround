@@ -365,7 +365,7 @@ const Cs_OnProcessBuy = () => {
                                     <div className='col-start-1 col-span-2 flex pl-[5px]'>Item</div>
                                     <div className='col-start-3 ml-6 flex justify-start'>Price</div>
                                 </div>
-                                <div id='screenSeller' className='grid-cols-3 h-[45%] overflow-y-auto'>
+                                <div id='screenSeller' className='relative grid-cols-3 h-[45%] overflow-y-auto'>
                                     {item.buyOrderDetails.map((orderDetail, index) => (
                                         <div className='grid grid-cols-3 mx-[10px] border-b-black pb-[2px]'>
                                             <div className='col-start-1 col-span-2 flex pl-[5px] items-center text-[12px]'>{orderDetail.productName}</div>
@@ -374,6 +374,9 @@ const Cs_OnProcessBuy = () => {
                                             </div>
                                         </div>
                                     ))}
+                                     <div className='absolute bottom-0 mt-2 bg-white rounded-md shadow-md w-full flex justify-center overflow-x-auto'>
+                                    {item.description}
+                                </div>
                                 </div>
 
                                 <div className='border border-x-0 border-b-0 mx-[15px] border-t-black pt-2 flex justify-between'>
@@ -495,9 +498,7 @@ const Cs_OnProcessBuy = () => {
                                         )}
                                     </Popup>
                                 </div>
-                                <div className='mt-2 bg-white rounded-md shadow-md w-full flex justify-center overflow-x-auto'>
-                                    {item.description}
-                                </div>
+                               
                             </div>
                         )
                     })}
