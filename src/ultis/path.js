@@ -24,7 +24,7 @@ const path = {
     BUY: 'buyIn',
     BUYOUT: 'buyOut',
     BILL: 'bill',
-
+    WARRANTY:'warranty',
     SCREENGOLD:'screengold',
 
 

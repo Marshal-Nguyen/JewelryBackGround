@@ -5,6 +5,7 @@ import axios from 'axios';
 import { MdDeleteOutline } from "react-icons/md";
 import { useDispatch } from 'react-redux';
 import { addCodeOrder, addCustomer, addProductBuy } from '../../store/slice/cardSilec';
+import {useProduct} from '../../components/ProductContext'
 
 
 const Buy = () => {
@@ -13,11 +14,27 @@ const Buy = () => {
   const [ListInvoice, setListInvoice] = useState(null); // Initialize as null
   const [selectedProduct, setSelectedProduct] = useState(null); // State to store selected product
 
-
+  const { setBuyFunction } = useProduct();
+  useEffect(() => {
+    setBuyFunction(() => getDelete);
+  }, [setBuyFunction]);
+  
+  const getDelete = () => {
+    setListInvoice(null);
+    setInvoiceCode('');
+  }
   const getInvoiceCode = async () => {
     try {
-      console.log(`Fetching invoice for code: ${InvoiceCode}`); // Add logging
-      const res = await axios.get(`https://jssatsproject.azurewebsites.net/api/BuyOrder/CheckOrder?orderCode=${InvoiceCode}`);
+      const token = localStorage.getItem('token')
+      if(!token){
+        throw new Error('No token found')
+      }
+      const res = await axios.get(`https://jssatsproject.azurewebsites.net/api/BuyOrder/CheckOrder?orderCode=${InvoiceCode}`,{
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
       dispatch(addCodeOrder(InvoiceCode))
       console.log('API response:', res); // Add logging
 
@@ -37,7 +54,7 @@ const Buy = () => {
     } catch (error) {
       console.error('Error fetching invoice:', error); // Add logging
 
-      toast.error('Error fetching invoice');
+      toast.error(`Error fetching invoice: ${error.message}`);
     }
   };
 
@@ -48,12 +65,20 @@ const Buy = () => {
   function formatPrice(price) {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
-  const getProductBuy = async (product,phone) => {
+  const getProductBuy = async (product, phone) => {
     // event.preventDefault();
     try {
-      const res = await axios.get(
-        `https://jssatsproject.azurewebsites.net/api/Customer/Search?searchTerm=${phone}&pageIndex=1&pageSize=10`
-      );
+      const token = localStorage.getItem('token')
+      if(!token){
+        throw new Error('No token found')
+      }
+      const res = await axios.get(`https://jssatsproject.azurewebsites.net/api/Customer/Search?searchTerm=${phone}&pageIndex=1&pageSize=10`
+        ,{
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+   
       const item = res.data.data[0];
       dispatch(addCustomer(item));
       dispatch(addProductBuy(product))
@@ -68,7 +93,7 @@ const Buy = () => {
 
           <div className="flex justify-between items-center gap-2">
             <h2 className="text-xl text-black">Check Information Product</h2>
-            <p className='cursor-pointer mr-3 p-2 rounded bg-[#edebeb]' onClick={() => { setListInvoice(null); setInvoiceCode(''); }}>
+            <p className='cursor-pointer mr-3 p-2 rounded bg-[#edebeb]' onClick={getDelete}>
               <MdDeleteOutline size='17px' color='#ef4e4e' />
             </p>
           </div>
@@ -134,7 +159,12 @@ const Buy = () => {
                       <td class="whitespace-nowrap px-0 py-4 text-center">{product.quantity}</td>
                       <td class="whitespace-nowrap px-6 py-4">{formatPrice(product.estimateBuyPrice)}</td>
                       <td scope="col" class="px-0 py-4 text-center">{product.reasonForEstimateBuyPrice}</td>
-                      <td scope="col" class="px-6 py-4"><button onClick={()=>getProductBuy(product,ListInvoice.customerPhoneNumber)}>Apply</button></td>
+                      {product && product.canRepurchase === true ? (
+                        <td scope="col" className="px-6 py-4">
+                          <button onClick={() => getProductBuy(product, ListInvoice.customerPhoneNumber)}>Apply</button>
+                        </td>
+                      ) : <button className='bg-red-500 p-1' >Purchased</button>
+}
                     </tr>
                   ))}
                 </tbody>

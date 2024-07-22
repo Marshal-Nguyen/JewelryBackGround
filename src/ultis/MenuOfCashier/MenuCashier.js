@@ -18,9 +18,9 @@ export const sidebarMenuCashier = [
     //     text: 'Bill For Invoice',
     //     icons: <GiReceiveMoney size={24} color="white" />
     // },
-    {
-        path: '/login',
-        text: 'Log out',
-        icons: <TbLogout2 size={24} color="white" />
-    },
+    // {
+    //     path: '/login',
+    //     text: 'Log out',
+    //     icons: <TbLogout2 size={24} color="white" />
+    // },
 ]

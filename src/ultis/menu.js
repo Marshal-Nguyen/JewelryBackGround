@@ -78,10 +78,6 @@ export const sidebarMenu = [
       
 
     },
-    {
-        path: '/login',
-        text: 'Log out',
-        icons: <TbLogout2 className='bg-[#3c26cc] p-[6PX] rounded-lg' size={30} color="white" />
-    },
+  
 
 ]

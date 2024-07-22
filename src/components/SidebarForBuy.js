@@ -6,6 +6,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaFileInvoiceDollar } from "react-icons/fa6";
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { useProduct } from '../components/ProductContext'
 
 
 const SidebarForBuy = () => {
@@ -22,6 +23,7 @@ const SidebarForBuy = () => {
   const [buyPrice, setBuyPrice] = useState(0);
 
   const [total, setTotal] = useState(0);
+  const { getBuyFunction} = useProduct();
 
   const dispatch = useDispatch();
   const CartProductBuy = useSelector(state => state.cart.CartProductBuy);
@@ -85,8 +87,7 @@ const SidebarForBuy = () => {
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No token found');
-      }
-    
+      }   
       let res =  await axios.post('https://jssatsproject.azurewebsites.net/api/BuyOrder/CreateInCompanyOrder', 
          data, 
         {
@@ -100,6 +101,9 @@ const SidebarForBuy = () => {
         dispatch(deleteCustomer());
         dispatch(deleteProductAll());
         setDescription('');
+        if (getBuyFunction) {
+          getBuyFunction();
+        }
       } else {
         toast.error('Add Fail');
         console.error('Unexpected response:', res);

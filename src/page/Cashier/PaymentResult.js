@@ -24,27 +24,63 @@ const PaymentResult = () => {
         };
     
         try {
-          let res = await axios.post('https://jssatsproject.azurewebsites.net/api/paymentdetail/createpaymentDetail', data);
+            const token = localStorage.getItem('token')
+            if (!token) {
+                throw new Error('No token found')
+            }
+          let res = await axios.post('https://jssatsproject.azurewebsites.net/api/paymentdetail/createpaymentDetail', data,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+          );
         } catch (error) {
           toast.error('Fail');
           console.error('Error invoice:', error);
         }
       };
     const UpdatePayment = async (status) => {
+        const token = localStorage.getItem('token')
+        if (!token) {
+            throw new Error('No token found')
+        }
         const res = await axios.put(`https://jssatsproject.azurewebsites.net/api/Payment/UpdatePayment?id=${paymentId}`, {
             status: status,
+        },{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
     }
     const CreateGuarantee  = async () => {
-        await axios.post('https://jssatsproject.azurewebsites.net/api/Guarantee/CreateGuarantee', orderId);
+        const token = localStorage.getItem('token')
+        if (!token) {
+            throw new Error('No token found')
+        }
+        await axios.post('https://jssatsproject.azurewebsites.net/api/Guarantee/CreateGuarantee', orderId,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
     }
     // const UpdateSpecialDiscount = async () => {
     //     await axios.put('https://jssatsproject.azurewebsites.net/api/SpecialDiscountRequest/UpdateBySellOrder', orderId);
     // }
     const UpdateSpecialDiscount = async () => {
         try {
+            const token = localStorage.getItem('token')
+            if (!token) {
+                throw new Error('No token found')
+            }
             await axios.put('https://jssatsproject.azurewebsites.net/api/SpecialDiscountRequest/UpdateBySellOrder', {
                 orderId: orderId
+            },{
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             });
         } catch (error) {
             console.error('Error updating special discount:', error);
@@ -52,17 +88,39 @@ const PaymentResult = () => {
     }
     const UpdatePoint = async () => {
         try {
+            const token = localStorage.getItem('token')
+            if (!token) {
+                throw new Error('No token found')
+            }
             await axios.put('https://jssatsproject.azurewebsites.net/api/Point/UpdatePoint', {
                 orderId: orderId
+            },{
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             });
         } catch (error) {
             console.error('Error updating special discount:', error);
         }
     }
     const Mail = async () => {
-        let res = await axios.get(`https://jssatsproject.azurewebsites.net/api/sellorder/getbyid?id=${orderId}`)
+        console.log('order',orderId)
+        const token = localStorage.getItem('token')
+        if (!token) {
+            throw new Error('No token found')
+        }
+        let res = await axios.get(`https://jssatsproject.azurewebsites.net/api/sellorder/getbyid?id=${orderId}`,{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
         const resdata = res.data.data[0]
-        let customer = await axios.get(`https://jssatsproject.azurewebsites.net/api/Customer/Search?searchTerm=${resdata.customerPhoneNumber}`)
+        console.log('resdata',resdata)
+        let customer = await axios.get(`https://jssatsproject.azurewebsites.net/api/Customer/Search?searchTerm=${resdata.customerPhoneNumber}`,{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
         let data = {
             toAddress: customer.data.data[0].email,
             subject:'Electronic invoice of Jewelry Store',
@@ -74,7 +132,11 @@ const PaymentResult = () => {
         console.log('RES',resdata)
         console.log('CUS',customer)
         console.log('mail',data)
-        await axios.post('https://jssatsproject.azurewebsites.net/api/Mail/Send', data);
+        await axios.post('https://jssatsproject.azurewebsites.net/api/Mail/Send', data,{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
     }
     function calculateTotalPromotionValue(item) {
         return item.sellOrderDetails.reduce((total, orderDetail) => {

@@ -4,9 +4,8 @@ import { hover } from '@testing-library/user-event/dist/hover'
 import { useState } from 'react'
 import logo_v2_seller from '../../assets/logo-Photoroom-removebg-preview.png'
 import { sidebarMenuCashier } from '../../ultis/MenuOfCashier/MenuCashier'
-import { BiLogOut } from "react-icons/bi";// logout
-import { toast } from 'react-toastify'
-
+import icons from "../../ultis/icon"
+const {TbLogout2} = icons
 const notActive =
   'py-3 px-[25px] font-thin font-noto-serif-ethiopic italic flex gap-3 items-center text-white text-[14px]';
 const activeStyle =
@@ -63,9 +62,7 @@ const Cs_SidebarLeft = () => {
             </NavLink>
           </div>
         ))}
-        {/* <NavLink to='/login' onClick={handleLogOut} className="mt-auto items-center text-white">
-          <BiLogOut size={24} className="mr-2" /> Logout
-        </NavLink> */}
+
       </div>
       <div class="absolute bottom-1 left-[5%] flex items-center justify-center px-2 w-11/12 h-20 bg-[#aeb0b1] rounded-md shadow-lg my-2">
         <section class="flex justify-center items-center mr-3 w-14 h-14 rounded-full shadow-md bg-gradient-to-r from-[#F9C97C] to-[#A2E9C1] hover:from-[#C9A9E9] hover:to-[#7EE7FC] hover:cursor-pointer hover:scale-110 duration-300">
@@ -78,7 +75,11 @@ const Cs_SidebarLeft = () => {
         <section class="block border-l border-gray-300 m">
           <div class="pl-3">
             <h3 class="text-gray-600 font-semibold text-sm">{name}</h3>
-            <h3 class="bg-clip-text text-transparent bg-gradient-to-l from-[#005BC4] to-[#27272A] text-lg font-bold">{capitalizeFirstLetter(role)}</h3>
+            <h3 class="bg-clip-text text-transparent bg-gradient-to-l from-[#005BC4] to-[#27272A] text-lg font-bold flex items-center gap-2">{capitalizeFirstLetter(role)} {'|'} 
+            <NavLink to='/login' onClick={handleLogOut} >
+              <TbLogout2 size={24} color='black' className="mr-2 cursor-pointer hover:bg-white hover:rounded-xl bg-slate-400 rounded-xl p-1" />
+            </NavLink>
+              </h3>
           </div>
         </section>
       </div>  

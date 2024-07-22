@@ -10,5 +10,11 @@ export const menuRE = [
         text: 'Buy Out',
 
     },
+    {
+
+        path: 'warranty',
+        text: 'Warranty',
+
+    },
 
 ]

@@ -80,9 +80,18 @@ const Cs_OnProcessBuy = () => {
     };
     const getWaitingSearch = async (phone, page) => {
         try {
+            const token = localStorage.getItem('token')
+            if (!token) {
+                throw new Error('No token found')
+            }
             const res = await axios.get(
                 `https://jssatsproject.azurewebsites.net/api/buyorder/search?statusList=processing&customerPhone=${phone}&ascending=true&pageIndex=${page}&pageSize=10`
-            );
+                , {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
             if (res.data && res.data.data) {
                 setlistInvoice(res.data.data);
                 setTotalProduct(res.data.totalElements);
@@ -95,9 +104,18 @@ const Cs_OnProcessBuy = () => {
     };
     const getCompletedSearch = async (phone) => {
         try {
+            const token = localStorage.getItem('token')
+            if (!token) {
+                throw new Error('No token found')
+            }
             const res = await axios.get(
                 `https://jssatsproject.azurewebsites.net/api/Buyorder/search?statusList=completed&customerPhone=${phone}&ascending=true&pageIndex=1&pageSize=10`
-            );
+                , {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
             console.log('search completed:', res.data.data)
             // if (res.data && res.data.data) {
             //   showBill(res.data.data[0]);
@@ -109,7 +127,17 @@ const Cs_OnProcessBuy = () => {
     };
     const getInvoice = async (page) => {
         try {
-            let res = await fetchStatusBuyInvoice('processing', page);
+            // let res = await fetchStatusBuyInvoice('processing', page);
+            const token = localStorage.getItem('token')
+            if (!token) {
+                throw new Error('No token found')
+            }
+            const res = await axios.get(
+                `https://jssatsproject.azurewebsites.net/api/Buyorder/getall?statusList=processing&ascending=true&pageIndex=${page}&pageSize=8`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             if (res?.data?.data) {
                 setlistInvoice(res.data.data);
                 setTotalProduct(res.data.totalElements);
@@ -123,7 +151,16 @@ const Cs_OnProcessBuy = () => {
         getPayMentMethod();
     }, []);
     const getPayMentMethod = async () => {
-        let res = await fetchPaymentMethod();
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No token found');
+        }
+        let res = await axios.get(
+            `https://jssatsproject.azurewebsites.net/api/PaymentMethod/Getall`, {
+             headers: {
+                 Authorization: `Bearer ${token}`
+             }
+         });
         if (res && res.data && res.data.data) {
             setPaymentMethod(res.data.data)
         }
@@ -204,7 +241,18 @@ const Cs_OnProcessBuy = () => {
             if (!data.buyOrderId || !data.customerId || !data.createDate || !data.amount) {
                 throw new Error("Missing required fields in order data");
             }
-            let res = await axios.post('https://jssatsproject.azurewebsites.net/api/payment/createpayment', data);
+            const token = localStorage.getItem('token')
+            if (!token) {
+                throw new Error('No token found')
+            }
+            let res = await axios.post('https://jssatsproject.azurewebsites.net/api/payment/createpayment',
+                data,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
             console.log("Response from payment API:", res);
 
             const paymentID = res.data.data.id;
@@ -251,7 +299,15 @@ const Cs_OnProcessBuy = () => {
             status: 'completed',
         };
         try {
-            let res = await axios.post('https://jssatsproject.azurewebsites.net/api/paymentdetail/createpaymentDetail', data);
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('No token found');
+            }
+            let res = await axios.post('https://jssatsproject.azurewebsites.net/api/paymentdetail/createpaymentDetail', data, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             toast.success('Cash payment successful');
             getCompletedSearch(phone)
         } catch (error) {
@@ -272,10 +328,19 @@ const Cs_OnProcessBuy = () => {
                                 <button
                                     onClick={async () => {
                                         try {
+                                            const token = localStorage.getItem('token');
+                                            if (!token) {
+                                                throw new Error('No token found');
+                                            }
                                             const res = await axios.put(`https://jssatsproject.azurewebsites.net/api/BuyOrder/UpdateStatus?orderId=${id}`, {
-                                                newStatus: 'cancelled'
-                                             
-                                            });
+                                                newStatus: 'cancelled',
+                                            },
+                                                {
+                                                    headers: {
+                                                        Authorization: `Bearer ${token}`
+                                                    }
+                                                }
+                                            );
                                             console.log(res.data)
                                             toast.success('Success');
                                             getInvoice(1);
@@ -374,9 +439,9 @@ const Cs_OnProcessBuy = () => {
                                             </div>
                                         </div>
                                     ))}
-                                     <div className='absolute bottom-0 mt-2 bg-white rounded-md shadow-md w-full flex justify-center overflow-x-auto'>
-                                    {item.description}
-                                </div>
+                                    <div className='absolute bottom-0 mt-2 bg-white rounded-md shadow-md w-full flex justify-center overflow-x-auto'>
+                                        {item.description}
+                                    </div>
                                 </div>
 
                                 <div className='border border-x-0 border-b-0 mx-[15px] border-t-black pt-2 flex justify-between'>
@@ -498,7 +563,7 @@ const Cs_OnProcessBuy = () => {
                                         )}
                                     </Popup>
                                 </div>
-                               
+
                             </div>
                         )
                     })}

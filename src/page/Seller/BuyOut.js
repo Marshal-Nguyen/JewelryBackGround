@@ -20,9 +20,17 @@ const BuyOut = () => {
   const [materialWeight, setMaterialWeight] = useState('');
   const [categoryTypeId, setCategoryTypeId] = useState('');
   const [buyPrice, setBuyPrice] = useState('');
-  const [quantity, setQuantity] = useState('');
+  const [quantity, setQuantity] = useState(1);
 
   const handleAddProduct = () => {
+    let newMaterialId = materialId;
+    let newMaterialWeight = materialWeight;
+
+    if (categoryTypeId === '7') {
+      newMaterialId = null;
+      newMaterialWeight = null;
+    }
+
     const newProduct = {
       productName,
       diamondGradingCode,
@@ -49,7 +57,15 @@ const BuyOut = () => {
 
   const MaterialID = async () => {
     try {
-      const res = await axios.get('https://jssatsproject.azurewebsites.net/api/Material/getall');
+      const token = localStorage.getItem('token')
+      if (!token) {
+        throw new Error('No token found')
+      }
+      const res = await axios.get('https://jssatsproject.azurewebsites.net/api/Material/getall',{
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       setMaterials(res.data.data); // Store fetched data in the state
     } catch (error) {
       console.error('Error fetching material:', error);
@@ -64,7 +80,15 @@ const BuyOut = () => {
 
   const CategotyID = async () => {
     try {
-      const res = await axios.get('https://jssatsproject.azurewebsites.net/api/productcategory/getall');
+      const token = localStorage.getItem('token')
+      if (!token) {
+        throw new Error('No token found')
+      }
+      const res = await axios.get('https://jssatsproject.azurewebsites.net/api/productcategory/getall',{
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       setCategory(res.data.data); // Store fetched data in the state
     } catch (error) {
       console.error('Error fetching material:', error);
@@ -81,8 +105,16 @@ const BuyOut = () => {
   const getCustormer = async () => {
     // event.preventDefault();
     try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        throw new Error('No token found')
+      }
       const res = await axios.get(
-        `https://jssatsproject.azurewebsites.net/api/Customer/Search?searchTerm=${CustomerPhone}&pageIndex=1&pageSize=10`
+        `https://jssatsproject.azurewebsites.net/api/Customer/Search?searchTerm=${CustomerPhone}&pageIndex=1&pageSize=10`,{
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
       const item = res.data.data[0];
       setListInforCustomer(item)
@@ -199,6 +231,19 @@ const BuyOut = () => {
           <form onSubmit={(e) => { e.preventDefault(); handleAddProduct(); }}
             className='grid grid-cols-4'
           >
+            <div className="w-11/12 h-14 flex rounded-lg border-2 border-solid border-[#211758b4] items-center px-2">
+              <select
+                className="w-full h-14 text-center bg-transparent focus:outline-none text-black"
+                value={categoryTypeId}
+                onChange={(e) => setCategoryTypeId(e.target.value)}
+                required
+              >
+                <option value="" disabled>Select Category</option>
+                {category.map((category) => (
+                  <option key={category.id} value={category.id}>{category.name}</option>
+                ))}
+              </select>
+            </div>
             <div className="w-11/12 px-2 mb-2 h-14 flex rounded-lg border-2 border-solid border-[#211758b4] items-center">
               <input
                 className="w-full h-14 text-center bg-transparent focus:outline-none text-black"
@@ -218,42 +263,35 @@ const BuyOut = () => {
                 onChange={(e) => setDiamondGradingCode(e.target.value)}
               />
             </div>
-            <div className="w-11/12 h-14 flex rounded-lg border-2 border-solid border-[#211758b4] items-center px-2">
-              <select
-                className="w-full h-14 text-center bg-transparent focus:outline-none text-black"
-                value={materialId}
-                onChange={(e) => setMaterialId(e.target.value)}
-                required
-              >
-                <option value="" disabled>Select Material</option>
-                {materials.map((material) => (
-                  <option key={material.id} value={material.id}>{material.name}</option>
-                ))}
-              </select>
-            </div>
-            <div className="w-11/12 px-2 h-14 flex rounded-lg border-2 border-solid border-[#211758b4]  items-center">
-              <input
-                className="w-full h-14 text-center bg-transparent focus:outline-none text-black"
-                type="number"
-                min='1'
-                placeholder="Material Weight"
-                value={materialWeight}
-                onChange={(e) => setMaterialWeight(e.target.value)}
-              />
-            </div>
-            <div className="w-11/12 h-14 flex rounded-lg border-2 border-solid border-[#211758b4] items-center px-2">
-              <select
-                className="w-full h-14 text-center bg-transparent focus:outline-none text-black"
-                value={categoryTypeId}
-                onChange={(e) => setCategoryTypeId(e.target.value)}
-                required
-              >
-                <option value="" disabled>Select Category</option>
-                {category.map((category) => (
-                  <option key={category.id} value={category.id}>{category.name}</option>
-                ))}
-              </select>
-            </div>
+            
+            {categoryTypeId !== '7' && (
+  <>
+               <div className="w-11/12 h-14 flex rounded-lg border-2 border-solid border-[#211758b4] items-center px-2">
+               <select
+                 className="w-full h-14 text-center bg-transparent focus:outline-none text-black"
+                 value={materialId}
+                 onChange={(e) => setMaterialId(e.target.value)}
+                 required
+               >
+                 <option value="" disabled>Select Material</option>
+                 {materials.map((material) => (
+                   <option key={material.id} value={material.id}>{material.name}</option>
+                 ))}
+               </select>
+             </div>
+             <div className="w-11/12 px-2 h-14 flex rounded-lg border-2 border-solid border-[#211758b4]  items-center">
+               <input
+                 className="w-full h-14 text-center bg-transparent focus:outline-none text-black"
+                 type="number"
+                 min='1'
+                 placeholder="Material Weight"
+                 value={materialWeight}
+                 onChange={(e) => setMaterialWeight(e.target.value)}
+               />
+             </div>
+             </>
+)}
+           
             <div className="w-11/12 px-2 h-14 flex rounded-lg border-2 border-solid border-[#211758b4]  items-center">
               <input
                 className="w-full h-14 text-center bg-transparent focus:outline-none text-black"
@@ -270,10 +308,10 @@ const BuyOut = () => {
                 type="number"
                 min ={1}
                 
-                placeholder="Quantity"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                required
+                placeholder="Quantity: 1"
+                // value={quantity}
+                // onChange={(e) => setQuantity(e.target.value)}
+                readOnly
               />
             </div>
             <div className="w-11/12  h-14 flex rounded-lg justify-center  items-center">

@@ -54,7 +54,7 @@ const fetchAllProduct = () => {
     // return axios.get("https://jssatsproject.azurewebsites.net/api/product/getall");
 }
 const fetchPaymentMethod = () =>{
-    return axios.get("https://jssatsproject.azurewebsites.net/api/PaymentMethod/Getall");
+    return axios.get(`https://jssatsproject.azurewebsites.net/api/PaymentMethod/Getall`);
 }
 export {fetchStatusBuyInvoice,fetchDoubleStatusInvoice,fetchStatusInvoice,fetchPaymentMethod,fetchAllProduct,fetchAllDiamondTest,fetchAllReGold,fetchAllWhGold,fetchAllRing,fetchAllEarring,fetchAllNecklace,fetchAllBangles,fetchAllPromotion,fetchAllInvoice,fetchAllCustomer,loginApi,fetchAllDiamond};
 

@@ -43,7 +43,17 @@ const Cs_Process = () => {
 
   const getInvoice = async (page) => {
     try {
-      let res = await fetchStatusInvoice('processing', page);
+
+      const token = localStorage.getItem('token')
+      if (!token) {
+          throw new Error('No token found')
+      }
+      const res = await axios.get(
+         `https://jssatsproject.azurewebsites.net/api/sellorder/getall?statusList=processing&ascending=true&pageIndex=${page}&pageSize=8`, {
+          headers: {
+              Authorization: `Bearer ${token}`
+          }
+      });
       if (res?.data?.data) {
         setListInvoice(res.data.data);
         setTotalProduct(res.data.totalElements);
@@ -73,9 +83,19 @@ const Cs_Process = () => {
   const [createDate, setCreateDate] = useState(new Date().toISOString());
 
   const handleComplete = async (id) => {
+    const token = localStorage.getItem('token')
+    if (!token) {
+        throw new Error('No token found')
+    }
     await axios.put(`https://jssatsproject.azurewebsites.net/api/SellOrder/UpdateStatus?id=${id}`, {
       status: 'completed',
-    });
+    },
+    {
+      headers: {
+          Authorization: `Bearer ${token}`
+      }
+  }
+  );
   };
 
 
@@ -91,8 +111,17 @@ const Cs_Process = () => {
 
   const getWaitingSearch = async (phone, page) => {
     try {
+      const token = localStorage.getItem('token');
+     if (!token) {
+     throw new Error('No token found');
+     }
       const res = await axios.get(
-        `https://jssatsproject.azurewebsites.net/api/sellorder/search?statusList=processing&customerPhone=${phone}&ascending=true&pageIndex=${page}&pageSize=10`
+        `https://jssatsproject.azurewebsites.net/api/sellorder/search?statusList=processing&customerPhone=${phone}&ascending=true&pageIndex=${page}&pageSize=10`,
+        {
+          headers: {
+              Authorization: `Bearer ${token}`
+          }
+      }
       );
       if (res.data && res.data.data) {
         console.log('Search Results:', res.data.data); // Check the search results here

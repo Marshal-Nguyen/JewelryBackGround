@@ -6,7 +6,8 @@ import { hover } from '@testing-library/user-event/dist/hover'
 import { useState } from 'react'
 import { BiLogOut } from "react-icons/bi";// logout
 import { toast } from 'react-toastify'
-
+import icons from "../ultis/icon"
+const {TbLogout2} = icons
 
 const notActive =
   'py-3 px-[25px] font-thin font-noto-serif-ethiopic italic flex gap-3 items-center text-white text-[14px]';
@@ -101,8 +102,11 @@ const Sidebar = () => {
         <section class="block border-l border-gray-300 m">
           <div class="pl-3">
             <h3 class="text-gray-600 font-semibold text-sm">{name}</h3>
-            <h3 class="bg-clip-text text-transparent bg-gradient-to-l from-[#005BC4] to-[#27272A] text-lg font-bold">{capitalizeFirstLetter(role)}</h3>
-          </div>
+            <h3 class="bg-clip-text text-transparent bg-gradient-to-l from-[#005BC4] to-[#27272A] text-lg font-bold flex items-center gap-2">{capitalizeFirstLetter(role)} {'|'} 
+            <NavLink to='/login' onClick={handleLogOut} >
+              <TbLogout2 size={24} color='black' className="mr-2 cursor-pointer hover:bg-white hover:rounded-xl bg-slate-400 rounded-xl p-1" />
+            </NavLink>
+              </h3>          </div>
         </section>
       </div>  
     </div>

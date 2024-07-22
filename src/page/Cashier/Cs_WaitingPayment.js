@@ -119,7 +119,16 @@ const Cs_WaitingPayment = () => {
 
   const getInvoice = async (page) => {
     try {
-      let res = await fetchStatusInvoice('waiting for customer payment', page);
+      const token = localStorage.getItem('token')
+            if (!token) {
+                throw new Error('No token found')
+            }
+            const res = await axios.get(
+                `https://jssatsproject.azurewebsites.net/api/sellorder/getall?statusList=waiting for customer payment&ascending=true&pageIndex=${page}&pageSize=8`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
       if (res?.data?.data) {
         setlistInvoice(res.data.data);
         setTotalProduct(res.data.totalElements);
@@ -142,8 +151,16 @@ const Cs_WaitingPayment = () => {
 
   const getWaitingSearch = async (phone, page) => {
     try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+          throw new Error('No token found')
+      }
       const res = await axios.get(
-        `https://jssatsproject.azurewebsites.net/api/sellorder/search?statusList=waiting%20for%20customer%20payment&customerPhone=${phone}&ascending=true&pageIndex=${page}&pageSize=10`
+        `https://jssatsproject.azurewebsites.net/api/sellorder/search?statusList=waiting%20for%20customer%20payment&customerPhone=${phone}&ascending=true&pageIndex=${page}&pageSize=10`,{
+          headers: {
+            Authorization: `Bearer ${token}`
+        }
+        }
       );
       if (res.data && res.data.data) {
         setlistInvoice(res.data.data);
@@ -156,31 +173,40 @@ const Cs_WaitingPayment = () => {
     }
   };
 
-  const getCompletedSearch = async (phone) => {
-    try {
-      const res = await axios.get(
-        `https://jssatsproject.azurewebsites.net/api/sellorder/search?statusList=completed&customerPhone=${phone}&ascending=true&pageIndex=1&pageSize=10`
-      );
-      console.log('search completed:', res.data.data);
-      // if (res.data && res.data.data) {
-      //   showBill(res.data.data[0]);
-      // }
-    } catch (error) {
-      console.error('Error fetching customers:', error);
-      toast.error('Failed to fetch customers');
-    }
-  };
+  // const getCompletedSearch = async (phone) => {
+  //   try {
+  //     const res = await axios.get(
+  //       `https://jssatsproject.azurewebsites.net/api/sellorder/search?statusList=completed&customerPhone=${phone}&ascending=true&pageIndex=1&pageSize=10`
+  //     );
+  //     console.log('search completed:', res.data.data);
+  //     // if (res.data && res.data.data) {
+  //     //   showBill(res.data.data[0]);
+  //     // }
+  //   } catch (error) {
+  //     console.error('Error fetching customers:', error);
+  //     toast.error('Failed to fetch customers');
+  //   }
+  // };
 
   useEffect(() => {
     getPayMentMethod();
   }, []);
 
   const getPayMentMethod = async () => {
-    let res = await fetchPaymentMethod();
-    if (res && res.data && res.data.data) {
-      setPaymentMethod(res.data.data);
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('No token found');
     }
-  };
+    let res = await axios.get(
+        `https://jssatsproject.azurewebsites.net/api/PaymentMethod/Getall`, {
+         headers: {
+             Authorization: `Bearer ${token}`
+         }
+     });
+    if (res && res.data && res.data.data) {
+        setPaymentMethod(res.data.data)
+    }
+};
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -268,7 +294,17 @@ const Cs_WaitingPayment = () => {
         console.error('Error config:', error.config);
       }
     } else {
-      let res = await axios.get(`https://jssatsproject.azurewebsites.net/api/Payment/GetById?id=${paymentId}`);
+      const token = localStorage.getItem('token')
+      if (!token) {
+          throw new Error('No token found')
+      }
+      let res = await axios.get(`https://jssatsproject.azurewebsites.net/api/Payment/GetById?id=${paymentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+        }
+        }
+      );
       console.log('Đã có payment id', res.data.data);
       if (ChosePayMethodID === 3) {
         handleCompleteCash(res.data.data, item.customerPhoneNumber);
@@ -288,12 +324,24 @@ const Cs_WaitingPayment = () => {
       customerId: item.customerId,
       createDate: createDate,
       amount: item.amount,
-      returnUrl: 'https://jewelrystore-marshal-nguyens-projects.vercel.app/cs_public/payment-result'
+      // returnUrl: 'https://jewelrystore-marshal-nguyens-projects.vercel.app/cs_public/payment-result'
+      returnUrl: 'http://localhost:3000/cs_public/payment-result'
+
     };
     console.log('VNPay request', data);
 
     try {
-      let res = await axios.post('https://jssatsproject.azurewebsites.net/api/VnPay/createpaymentUrl', data);
+      const token = localStorage.getItem('token')
+      if (!token) {
+          throw new Error('No token found')
+      }
+      let res = await axios.post('https://jssatsproject.azurewebsites.net/api/VnPay/createpaymentUrl', data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+        }
+        }
+      );
       console.log(res.data);
       toast.success('Successful');
       // Automatically redirect to the returned URL
@@ -344,7 +392,7 @@ const Cs_WaitingPayment = () => {
         }
       );
       toast.success('Cash payment successful');
-      getCompletedSearch(phone);
+      // getCompletedSearch(phone);
     } catch (error) {
       toast.error('Fail');
       console.error('Error invoice:', error);
@@ -487,9 +535,17 @@ const Cs_WaitingPayment = () => {
                 <button
                   onClick={async () => {
                     try {
+                      const token = localStorage.getItem('token')
+            if (!token) {
+                throw new Error('No token found')
+            }
                       const res = await axios.put(`https://jssatsproject.azurewebsites.net/api/SellOrder/UpdateStatus?id=${id}`, {
                         status: 'cancelled',
                         createDate: currentTime,
+                      },{
+                        headers: {
+                          Authorization: `Bearer ${token}`
+                      }
                       });
                       console.log(res.data)
                       toast.success('Success');

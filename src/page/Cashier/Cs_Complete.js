@@ -44,7 +44,16 @@ const Cs_Complete = () => {
 
   const getInvoice = async (page) => {
     try {
-      let res = await fetchStatusInvoice('completed', page);
+      const token = localStorage.getItem('token')
+            if (!token) {
+                throw new Error('No token found')
+            }
+            const res = await axios.get(
+               `https://jssatsproject.azurewebsites.net/api/sellorder/getall?statusList=completed&ascending=true&pageIndex=${page}&pageSize=8`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
       if (res?.data?.data) {
         setlistInvoice(res.data.data);
         setTotalProduct(res.data.totalElements);

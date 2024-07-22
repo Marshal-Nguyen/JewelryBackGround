@@ -169,6 +169,7 @@ function App() {
             <Route path={path.RETURN_EX} element={<Return_Ex />} >
               <Route path={path.BUY} element={<Buy />} />
               <Route path={path.BUYOUT} element={<BuyOut />} />
+              <Route path={path.WARRANTY} element={<Warranty />} />
             </Route>
           </Route>
          
