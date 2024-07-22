@@ -18,7 +18,15 @@ const Warranty = () => {
     // Function to fetch data from API
     const fetchPolicyData = async () => {
       try {
-        const response = await axios.get('https://jssatsproject.azurewebsites.net/api/ReturnBuyBackPolicy/GetDisplayPolicy');
+        const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error("No token found");
+      }
+        const response = await axios.get('https://jssatsproject.azurewebsites.net/api/ReturnBuyBackPolicy/GetDisplayPolicy',{
+          headers: {
+            Authorization: `Bearer ${token}`
+         }
+        });
         const description = response.data.data.description;
 
         // Split the description by newline characters
