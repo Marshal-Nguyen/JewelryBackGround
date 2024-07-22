@@ -326,8 +326,8 @@ const Cs_WaitingPayment = () => {
       customerId: item.customerId,
       createDate: createDate,
       amount: item.amount,
-      // returnUrl: 'https://jewelrystore-marshal-nguyens-projects.vercel.app/cs_public/payment-result'
-      returnUrl: 'http://localhost:3000/cs_public/payment-result'
+       returnUrl: 'https://jewelrystore-marshal-nguyens-projects.vercel.app/cs_public/payment-result'
+      // returnUrl: 'http://localhost:3000/cs_public/payment-result'
 
     };
     console.log('VNPay request', data);
