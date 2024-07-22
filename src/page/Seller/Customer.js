@@ -13,8 +13,9 @@ import { fetchAllCustomer } from '../../apis/jewelryService';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Modal from 'react-modal';
-
+import { useNavigate } from 'react-router-dom';
 const Customer = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [listCustomer, setListCustomer] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -56,8 +57,8 @@ const Customer = () => {
         setTotalPage(res.data.totalPages);
       }
     } catch (error) {
-      console.error('Error fetching rings:', error);
-      toast.error('Failed to fetch rings');
+      navigate('/login');
+      toast.error('Login session expired');
     }
   };
 
@@ -113,24 +114,40 @@ const Customer = () => {
       toast.error('First name is required');
       return;
     }
+    if (firstname.length < 2) {
+      toast.error('First name must be at least 2 characters');
+      return;
+    }
     if (!lastname) {
       toast.error('Last name is required');
+      return;
+    }
+    if (lastname.length < 2) {
+      toast.error('Last name must be at least 2 characters');
       return;
     }
     if (!phone) {
       toast.error('Phone number is required');
       return;
     }
+    if (!/^\d{10,11}$/.test(phone)) {
+      toast.error('Phone number must be 10-11 digits');
+      return;
+    }
     if (!email) {
       toast.error('Email is required');
+      return;
+    }
+    if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+      toast.error('Invalid email format');
       return;
     }
     if (!address) {
       toast.error('Address is required');
       return;
     }
-    if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-      toast.error('Invalid email format');
+    if (address.length < 5) {
+      toast.error('Address must be at least 5 characters');
       return;
     }
 

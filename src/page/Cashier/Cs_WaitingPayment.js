@@ -13,7 +13,7 @@ import { IconContext } from 'react-icons';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { Link, useNavigate } from 'react-router-dom';
-
+// import { useNavigate } from 'react-router-dom';
 
 const FormatDate = ({ isoString }) => {
   // Cs_WaitingPayment
@@ -40,7 +40,7 @@ const Cs_WaitingPayment = () => {
   const [totalPage, setTotalPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [isPaymentSuccessful, setIsPaymentSuccessful] = useState(false);
-
+  const navigate = useNavigate();
   const [externalTransactionCode, setexternalTransactionCode] = useState('');
   const [CallBack, setCallBack] = useState('');
 
@@ -135,7 +135,9 @@ const Cs_WaitingPayment = () => {
         setTotalPage(res.data.totalPages);
       }
     } catch (error) {
-      console.error('Error fetching orders:', error);
+      // console.error('Error fetching orders:', error);
+      navigate('/login');
+      toast.error('Login session expired');
     }
   };
 

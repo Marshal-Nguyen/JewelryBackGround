@@ -34,9 +34,7 @@ const Sidebar = () => {
   };
 
   const handleLogOut = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-
+    localStorage.clear();
 
   }
   const name = localStorage.getItem('name');

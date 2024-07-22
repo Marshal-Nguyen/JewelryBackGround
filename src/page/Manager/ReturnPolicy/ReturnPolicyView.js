@@ -13,6 +13,11 @@ const ReturnPolicyView = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedPolicy, setSelectedPolicy] = useState(null); // State to hold selected policy
 
+    const [policyTitle, setPolicyTitle] = useState('');
+    const [exchangePolicy, setExchangePolicy] = useState('');
+    const [giftPolicy, setGiftPolicy] = useState('');
+    const [warranty, setWarranty] = useState('');
+    const [buyBackPolicy, setBuyBackPolicy] = useState('');
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
@@ -20,7 +25,7 @@ const ReturnPolicyView = () => {
     const policyPerPageOptions = [10, 15, 20, 25, 30, 35, 40, 45, 50];
     const [searchQuery1, setSearchQuery1] = useState(''); // when click icon => search, if not click => not search
     const [ascending, setAscending] = useState(false);
-
+    const [openDropdown, setOpenDropdown] = useState(null);
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -93,6 +98,14 @@ const ReturnPolicyView = () => {
 
     const handleDetailClick = (policy) => {
         setSelectedPolicy(policy); // Set selected policy for detail view
+        const descriptionSections = policy.description.split('\n');
+        if (descriptionSections.length > 0) {
+            setPolicyTitle(descriptionSections[0]);
+            setExchangePolicy(descriptionSections[1]);
+            setGiftPolicy(descriptionSections[2]);
+            setWarranty(descriptionSections[3]);
+            setBuyBackPolicy(descriptionSections[4]);
+          }
     };
     const getNamefromDescription = (value) => {
         if (!value) return '';  // Check if value is undefined or null
@@ -120,7 +133,10 @@ const ReturnPolicyView = () => {
     }
 
     const placeholders = Array.from({ length: pageSize - listPolicy.length });
-
+    const handleDropdownToggle = (policy) => {
+        setOpenDropdown(openDropdown === policy ? null : policy);
+      };
+    
     return (
         <div className="flex items-center justify-center min-h-screen bg-white mx-5 pt-5 mb-5 rounded">
             <div>
@@ -218,19 +234,53 @@ const ReturnPolicyView = () => {
             {selectedPolicy && (
                 <div className="fixed inset-0 z-30 flex items-center justify-center z-10 bg-gray-800 bg-opacity-50">
                     <div className="bg-white rounded-lg p-8 max-w-md w-full">
-                        <h2 className="text-2xl font-bold text-blue-600 text-center mb-4">{getNamefromDescription(selectedPolicy.description)}</h2>
+                    <div className='flex flex-col gap-2'>
+          <h1 className='text-center text-[40px] font-medium text-[#1b2b72ee] mb-4'>Warranty and Exchange Policy</h1>
+          
+          <button 
+            onClick={() => handleDropdownToggle('exchangePolicy')} 
+            className='w-full md:w-[300px] bg-transparent text-[#1b2b72ee] border border-[#1b2b72ee] rounded-lg text-sm px-5 py-2.5 text-center transition-colors duration-300 ease-in-out hover:bg-[#1b2b72ee] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#1b2b72ee]'>
+            Exchange Policy
+          </button>
+          {openDropdown === 'exchangePolicy' && (
+            <div className='p-4 border border-gray-300 rounded-lg mt-2'>
+              <p>{exchangePolicy}</p>
+            </div>
+          )}
+          
+          <button 
+            onClick={() => handleDropdownToggle('giftPolicy')} 
+            className='w-full md:w-[300px] bg-transparent text-[#1b2b72ee] border border-[#1b2b72ee] rounded-lg text-sm px-5 py-2.5 text-center transition-colors duration-300 ease-in-out hover:bg-[#1b2b72ee] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#1b2b72ee]'>
+            Gift Policy
+          </button>
+          {openDropdown === 'giftPolicy' && (
+            <div className='p-4 border border-gray-300 rounded-lg mt-2'>
+              <p>{giftPolicy}</p>
+            </div>
+         ) }
 
-                        <p className="text-sm text-gray-700 mb-2 text-xl"><strong>ID:</strong> {selectedPolicy.id}</p>
-                        <p className="text-sm text-gray-700 mb-2 text-xl"><strong>Description: </strong>{getDescription(selectedPolicy.description)}</p>
+          <button 
+            onClick={() => handleDropdownToggle('warranty')} 
+            className='w-full md:w-[300px] bg-transparent text-[#1b2b72ee] border border-[#1b2b72ee] rounded-lg text-sm px-5 py-2.5 text-center transition-colors duration-300 ease-in-out hover:bg-[#1b2b72ee] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#1b2b72ee]'>
+            Warranty
+          </button>
+          {openDropdown === 'warranty' && (
+            <div className='p-4 border border-gray-300 rounded-lg mt-2'>
+              <p>{warranty}</p>
+            </div>
+          )}
 
-                        <p className="text-sm text-gray-700 mb-2 text-xl"><strong>Effective Date:</strong> {formatEffectiveDate(selectedPolicy.effectiveDate)}</p>
-                        <p className="text-sm text-gray-700 mb-2 text-xl"><strong>Status:</strong>
-                            {selectedPolicy.status === 'active' ? (
-                                <span className="text-green-500 bg-green-100 font-bold p-1 px-2 mx-2 rounded-xl">ACTIVE</span>
-                            ) : (
-                                <span className="text-red-500 bg-red-100 font-bold p-1 px-2 mx-2 rounded-xl">INACTIVE</span>
-                            )
-                            }</p>
+          <button 
+            onClick={() => handleDropdownToggle('buyBackPolicy')} 
+            className='w-full md:w-[300px] bg-transparent text-[#1b2b72ee] border border-[#1b2b72ee] rounded-lg text-sm px-5 py-2.5 text-center transition-colors duration-300 ease-in-out hover:bg-[#1b2b72ee] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#1b2b72ee]'>
+            Buy Back Policy
+          </button>
+          {openDropdown === 'buyBackPolicy' && (
+            <div className='p-4 border border-gray-300 rounded-lg mt-2'>
+              <p>{buyBackPolicy}</p>
+            </div>
+          )}
+        </div>
 
                         <button
                             className="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md" onClick={() => setSelectedPolicy(null)}

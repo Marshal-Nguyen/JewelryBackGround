@@ -29,8 +29,7 @@ const Cs_SidebarLeft = () => {
     // Xử lý sự kiện nhấp vào menu item ở đây
   };
   const handleLogOut = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
+    localStorage.clear();
   }
   const name = localStorage.getItem('name');
   const role = localStorage.getItem('role');
