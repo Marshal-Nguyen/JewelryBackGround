@@ -11,7 +11,7 @@ import { IconContext } from "react-icons";
 import { toast } from 'react-toastify'
 import ScannerComponent from '../../components/ScannerComponent '
 import QRCode from "react-qr-code";
-
+import {useProduct} from '../../components/ProductContext'
 const Ring = () => {
   const dispatch = useDispatch()
   const [listRing, setListRing] = useState([]);
@@ -24,10 +24,16 @@ const Ring = () => {
   const [totalProduct, setTotalProduct] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
   const [showScanner, setShowScanner] = useState(false);
+  
+  const { setGetRingFunction } = useProduct();
+  useEffect(() => {
+    setGetRingFunction(() => getRing);
+  }, [setGetRingFunction]);
 
   const handlePageClick = (event) => {
     getRing(+event.selected + 1);
   }
+
   useEffect(() => {
     getRing(1);
   }, []);
@@ -98,7 +104,6 @@ const Ring = () => {
   function capitalizeFirstLetter(string) {
     return string.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
   }
-
   const handleSearch = (event) => {
     const searchTerm = event.target.value.trim();
     setSearchTerm(searchTerm);

@@ -9,7 +9,7 @@ import ReactPaginate from 'react-paginate';
 import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai"; // icons form react-icons
 import { IconContext } from "react-icons";
 import { toast } from 'react-toastify'
-
+import {useProduct} from '../../components/ProductContext'
 const Ring = () => {
   const dispatch = useDispatch()
   const [listRing, setListRing] = useState([]);
@@ -21,7 +21,10 @@ const Ring = () => {
 
   const [totalProduct, setTotalProduct] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
-
+  const { setGetRingFunction } = useProduct();
+  useEffect(() => {
+    setGetRingFunction(() => getRing);
+  }, [setGetRingFunction]);
   const handlePageClick = (event) => {
     getRing(+event.selected + 1);
   }

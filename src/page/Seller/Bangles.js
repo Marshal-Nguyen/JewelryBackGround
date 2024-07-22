@@ -12,6 +12,7 @@ import { IconContext } from "react-icons";
 import { toast } from 'react-toastify'
 import QRCode from "react-qr-code";
 import ScannerComponent from '../../components/ScannerComponent '
+import {useProduct} from '../../components/ProductContext'
 const Ring = () => {
   const dispatch = useDispatch()
 
@@ -26,7 +27,10 @@ const Ring = () => {
   const [totalProduct, setTotalProduct] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
   const [showScanner, setShowScanner] = useState(false);
-
+  const { setGetRingFunction } = useProduct();
+  useEffect(() => {
+    setGetRingFunction(() => getRing);
+  }, [setGetRingFunction]);
   const handlePageClick = (event) => {
     getRing(+event.selected + 1);
   }

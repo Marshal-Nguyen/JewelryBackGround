@@ -2,7 +2,7 @@ import { ToastContainer, Zoom, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
-
+import {ProductProvider} from './components/ProductContext'
 
 import { Public, Ring, Diamond, Customer, Jewelry, Necklace, Earring, Bangles, WholesaleGold, RetailGold, SearchInvoice, Promotion, Return_Ex, Buy, Warranty, BuyOut, OnprocessSeller, CompleteSeller, Bill } from './page/Seller';
 
@@ -74,7 +74,7 @@ function App() {
 
   return (
     <>
-
+      <ProductProvider>
       <div className=''>
 
         <Routes>
@@ -149,6 +149,7 @@ function App() {
             <Route path="detailStaff" element={<StaffDetail />} />
           </Route>
           {/* Seller */}
+        
           <Route path={path.PUBLIC} element={<Public />}>
             <Route path={path.DIAMOND} element={<Diamond />} />
             <Route path={path.CUSTOMER} element={<Customer />} />
@@ -170,6 +171,7 @@ function App() {
               <Route path={path.BUYOUT} element={<BuyOut />} />
             </Route>
           </Route>
+         
           {/* Cashier */}
           <Route path={path.CS_PUBLIC} element={<Cs_Public />}>
             <Route path={path.PAYMENTRESULT} element={<PaymentResult />} />
@@ -196,8 +198,7 @@ function App() {
       <ToastContainer
 
       />
-
-
+</ProductProvider>
     </>
   );
 }

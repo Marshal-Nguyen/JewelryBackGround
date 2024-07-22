@@ -14,6 +14,7 @@ import { FaFileInvoiceDollar } from "react-icons/fa6";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Modal from 'react-modal';
+import {useProduct} from '../components/ProductContext'
 
 const SidebarRight = () => {
   const [currentTime, setCurrentTime] = useState(new Date().toISOString());
@@ -36,12 +37,15 @@ const SidebarRight = () => {
   const [TotalInvoice, setTotalInvoice] = useState(0);
   const [usePoint, setUsePoint] = useState(0)
 
+  const { getRingFunction, getNecklaceFunction, getBanglesFunction, getEarFunction, getDiamondFunction, getRetailFunction, getWholeFunction } = useProduct();
+
   const dispatch = useDispatch();
   const CartProduct = useSelector(state => state.cart.CartArr);
   const CusPoint = useSelector(state => state.cart.CusPoint);
   const Rate = useSelector(state => state.cart.Rate);
 
   
+
   const handleSubmitOrder = async (isDraft = false) => {
     // Create a new object for ProductCodesAndPromotionIds with 0 values replaced by null
     const adjustedProductCodesAndPromotionIds = Object.fromEntries(
@@ -101,6 +105,28 @@ const SidebarRight = () => {
         // Update the invoice list immediately
         getListOrder(1);
         getResponseManager(1)
+        // Call the getRing and getNecklace functions from Ring and Necklace components
+        if (getRingFunction) {
+          getRingFunction(1);
+        }
+        if (getNecklaceFunction) {
+          getNecklaceFunction(1);
+        }
+        if (getBanglesFunction) {
+          getBanglesFunction(1);
+        }
+        if (getEarFunction) {
+          getEarFunction(1);
+        }
+        if (getDiamondFunction) {
+          getDiamondFunction(1);
+        }
+        if (getRetailFunction) {
+          getRetailFunction(1);
+        }
+        if (getWholeFunction) {
+          getWholeFunction(1);
+        }
       } else {
         toast.error('Add Fail');
         console.error('Unexpected response:', res);
