@@ -43,7 +43,6 @@ const Cs_Process = () => {
 
   const getInvoice = async (page) => {
     try {
-
       const token = localStorage.getItem('token')
       if (!token) {
           throw new Error('No token found')
