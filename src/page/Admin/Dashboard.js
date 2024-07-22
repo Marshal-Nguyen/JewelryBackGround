@@ -6,38 +6,6 @@ import P2 from './Dashboard/P2';
 import P3 from './Dashboard/P3';
 
 export default function Dashboard() {
-    // const [startDate, setStartDate] = useState('');
-    // const [endDate, setEndDate] = useState('');
-    // const [loading, setLoading] = useState(false);
-
-    // const handleSubmit = async () => {
-    //     setLoading(true);
-    //     try {
-    //         const response = await axios.post(`https://jssatsproject.azurewebsites.net/Metrics/csv/ExportChangeMetrics?startDate=${startDate}&endDate=${endDate}`, {}, {
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 // Add any required headers (e.g., Authorization)
-    //             },
-    //             responseType: 'blob' // Important for handling binary data
-    //         });
-
-    //         // Create a URL for the file
-    //         const url = window.URL.createObjectURL(new Blob([response.data]));
-    //         const link = document.createElement('a');
-    //         link.href = url;
-    //         link.setAttribute('download', 'Dashboard.csv'); // Set the file name
-    //         document.body.appendChild(link);
-    //         link.click();
-
-    //         // Clean up and remove the link
-    //         link.parentNode.removeChild(link);
-    //     } catch (error) {
-    //         console.error('Error fetching data:', error);
-    //         // Handle errors (e.g., display error message)
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
 
     return (
         <>

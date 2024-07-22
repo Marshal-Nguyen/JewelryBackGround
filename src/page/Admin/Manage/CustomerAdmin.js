@@ -62,7 +62,20 @@ const Customer = () => {
     const getCustomer = async (pageIndex) => {
         setLoadingApi(true);
         try {
-            const res = await axios.get(`https://jssatsproject.azurewebsites.net/api/customer/getall?pageIndex=${pageIndex}&pageSize=${pageSize}`);
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error("No token found");
+            }
+
+            const res = await axios.get(
+                `https://jssatsproject.azurewebsites.net/api/customer/getall?pageIndex=${pageIndex}&pageSize=${pageSize}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
             if (res && res.data && res.data.data) {
                 const customers = res.data.data;
                 if (customers.length > 0) {
@@ -82,6 +95,7 @@ const Customer = () => {
         setLoadingApi(false);
     };
 
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
@@ -99,7 +113,20 @@ const Customer = () => {
     const handleSearch = async () => {
         setLoadingApi(true);
         try {
-            const res = await axios.get(`https://jssatsproject.azurewebsites.net/api/customer/search?searchTerm=${searchQuery}&pageIndex=${currentPage}&pageSize=${pageSize}`);
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error("No token found");
+            }
+
+            const res = await axios.get(
+                `https://jssatsproject.azurewebsites.net/api/customer/search?searchTerm=${searchQuery}&pageIndex=${currentPage}&pageSize=${pageSize}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
             if (res && res.data && res.data.data) {
                 const customers = res.data.data;
                 // console.log('>>> check ressss', res)
@@ -117,6 +144,7 @@ const Customer = () => {
         setLoadingApi(false);
     };
 
+
     const handleEditClick = (customer) => {
         setSelectedCustomer(customer);
         setIsModalOpen(true);
@@ -131,10 +159,21 @@ const Customer = () => {
     const handleSaveChanges = async () => {
         setLoadingApi(true);
         try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error("No token found");
+            }
+
             const res = await axios.put(
                 `https://jssatsproject.azurewebsites.net/api/Customer/UpdateCustomer?id=${selectedCustomer.id}`,
-                selectedCustomer
+                selectedCustomer,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
             );
+
             if (res.status === 200) {
                 const updatedCustomers = originalListCustomer.map((customer) =>
                     customer.id === selectedCustomer.id ? selectedCustomer : customer
@@ -151,6 +190,7 @@ const Customer = () => {
         }
         setLoadingApi(false);
     };
+
     const validatePhoneNumber = (phone) => {
         const phoneRegex = /^(0[3|5|7|8|9])+([0-9]{8})\b/;
         return phoneRegex.test(phone);

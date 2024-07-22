@@ -7,6 +7,7 @@ import Modal from 'react-modal';
 import { CiViewList } from "react-icons/ci";
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { FiEdit3 } from "react-icons/fi";
 const RetailGoldManager = () => {
     const scrollRef = useRef(null);
     const [isYesNoOpen, setIsYesNoOpen] = useState(false);
@@ -23,7 +24,7 @@ const RetailGoldManager = () => {
     const productPerPageOptions = [10, 15, 20, 25, 30, 35, 40, 45, 50];
     const [searchQuery1, setSearchQuery1] = useState(''); // when click icon => search, if not click => not search
     const [ascending, setAscending] = useState(true);
-
+    const [updateOrDetail, setUpdateOrDetail] = useState('');
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -66,7 +67,7 @@ const RetailGoldManager = () => {
         fetchStalls();
     }, []);
 
-    const handleDetailClick = async (id) => {
+    const handleDetailClick = async (id, updateordetail) => {
         try {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -81,6 +82,7 @@ const RetailGoldManager = () => {
                 const details = res.data.data[0];
                 setSelectedRetailGold(details);
                 // console.log('>>> check ressss', res)
+                setUpdateOrDetail(updateordetail);
                 setIsModalOpen(true); // Open modal when staff details are fetched
             }
 
@@ -219,6 +221,7 @@ const RetailGoldManager = () => {
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedRetailGold(null);
+        setUpdateOrDetail('');
     };
     const formatUpper = (str) => {
         if (!str) return '';
@@ -244,7 +247,7 @@ const RetailGoldManager = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-white mx-5 pt-5 mb-5 rounded">
             <div>
-                <h1 ref={scrollRef} className="text-3xl font-bold text-center text-blue-800 mb-4">List of retail gold</h1>
+                <h1 ref={scrollRef} className="text-3xl font-bold text-center text-blue-800 mb-4">List Of Retail Gold</h1>
 
                 <div className="flex justify-between items-center">
                     <div className="ml-2">
@@ -346,10 +349,15 @@ const RetailGoldManager = () => {
                                             <span className="text-green-500 bg-green-100 font-bold p-1 px-2 rounded-xl">ACTIVE</span>
                                         ) : item.status === 'inactive' ? (
                                             <span className="text-red-500 bg-red-100 font-bold p-1 px-2 rounded-xl">INACTIVE</span>
-                                        ) : 'null'
+                                        ) : item.status === 'repurchased' ? (
+                                            <span className="text-zinc-500 bg-zinc-100 font-bold p-1 px-2 rounded-xl">REPURCHASED</span>
+                                        ) : item.status
                                         }
                                     </td>
-                                    <td className="text-3xl text-[#000099] pl-4"><CiViewList onClick={() => handleDetailClick(item.code)} /></td>
+                                    <td className="flex space-x-2 mt-9">
+                                        <CiViewList className="text-3xl text-[#000099]" onClick={() => handleDetailClick(item.code, 'detail')} />
+                                        {item.status === 'active' && <FiEdit3 className="text-3xl text-green-500" onClick={() => handleDetailClick(item.code, 'update')} />}
+                                    </td>
                                 </tr>
                             ))}
                             {placeholders.map((_, index) => (
@@ -394,66 +402,99 @@ const RetailGoldManager = () => {
                     {selectedRetailGold && (
                         <div className="fixed inset-0 flex items-center justify-center z-10 bg-gray-800 bg-opacity-50">
                             <div className="bg-white rounded-lg p-8 max-w-md w-full">
-                                <h2 className="text-xl text-center text-blue-600 font-bold mb-4">{selectedRetailGold.name}</h2>
+                                {updateOrDetail === 'detail' && (
+                                    <>
+                                        <h2 className="text-xl text-center text-blue-600 font-bold mb-4">{selectedRetailGold.name}</h2>
 
-                                {/* <p><strong>ID:</strong> {selectedDiamond.id}</p> */}
-                                <p className="text-sm text-gray-700 mb-2"><strong>ID:</strong> {selectedRetailGold.id}</p>
-                                <p className="text-sm text-gray-700 mb-2"><strong>Code:</strong> {selectedRetailGold.code}</p>
-                                <p className="text-sm text-gray-700 mb-2"><strong>Category:</strong>{selectedRetailGold.category}</p>
-                                <p className="text-sm text-gray-700 mb-2"><strong>Material:</strong> {selectedRetailGold.materialName}</p>
-                                <p className="text-sm text-gray-700 mb-2"><strong>Material Weight:</strong> {selectedRetailGold.materialWeight}</p>
+                                        <div className="grid grid-cols-2">
+                                            <p className="border p-2"><strong>ID:</strong></p>
+                                            <p className="border p-2">{selectedRetailGold.id}</p>
 
-                                <p className="text-sm text-gray-700 mb-2"><strong>Price Rate: </strong>{selectedRetailGold.priceRate}</p>
-                                <h1 ><strong>Price:</strong> {formatCurrency(selectedRetailGold.productValue)}</h1>
-                                <form className="mt-4">
-                                    <div className="mb-2">
-                                        <label className="block text-sm font-medium text-gray-700">
-                                            Stall
-                                        </label>
-                                        <select
-                                            name="stallsId"
-                                            value={selectedRetailGold?.stalls?.id ?? ''}
-                                            onChange={(e) => {
-                                                const value = e.target.value === 'null' ? null : e.target.value;
-                                                setSelectedRetailGold((prevSelectedProduct) => ({
-                                                    ...prevSelectedProduct,
-                                                    stalls: {
-                                                        id: value
-                                                    }
-                                                }));
-                                            }}
-                                            className="px-3 py-2 border border-gray-300 rounded-md w-full"
-                                        >
-                                            <option value="" disabled selected>
-                                                {selectedRetailGold.stalls ? selectedRetailGold.stalls.name : 'null'}
-                                            </option>
-                                            {stalls
-                                                .filter(stall => stall.description === 'retail gold' || stall.description === 'counter')
-                                                .map(stall => (
-                                                    <option key={stall.id} value={stall.id}>
-                                                        {stall.name} - {stall.description && formatUpper(stall.description)}
+                                            <p className="border p-2"><strong>Code:</strong></p>
+                                            <p className="border p-2">{selectedRetailGold.code}</p>
+
+
+                                            <p className="border p-2"><strong>Material:</strong></p>
+                                            <p className="border p-2">{selectedRetailGold.materialName}</p>
+
+                                            <p className="border p-2"><strong>Material Weight:</strong></p>
+                                            <p className="border p-2">{selectedRetailGold.materialWeight}</p>
+
+                                            <p className="border p-2"><strong>Price Rate:</strong></p>
+                                            <p className="border p-2">{selectedRetailGold.priceRate}</p>
+
+                                            <p className=" border p-2"><strong>Price:</strong></p>
+                                            <p className=" border p-2 ">{formatCurrency(selectedRetailGold.productValue)}</p>
+                                        </div>
+
+
+
+                                        <div className="">
+                                            <button
+                                                onClick={closeModal}
+                                                className="px-4 py-2 bg-blue-500 text-white rounded-md"
+                                                style={{ width: '5rem' }}
+                                            >
+                                                Close
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
+                                {updateOrDetail === 'update' && (
+                                    <>
+                                        <form className="mt-4">
+                                            <div className="mb-2">
+                                                <label className="block text-sm font-medium text-gray-700">
+                                                    Stall
+                                                </label>
+                                                <select
+                                                    name="stallsId"
+                                                    value={selectedRetailGold?.stalls?.id ?? ''}
+                                                    onChange={(e) => {
+                                                        const value = e.target.value === 'null' ? null : e.target.value;
+                                                        setSelectedRetailGold((prevSelectedProduct) => ({
+                                                            ...prevSelectedProduct,
+                                                            stalls: {
+                                                                id: value
+                                                            }
+                                                        }));
+                                                    }}
+                                                    className="px-3 py-2 border border-gray-300 rounded-md w-full"
+                                                >
+                                                    <option value="" disabled selected>
+                                                        {selectedRetailGold.stalls ? selectedRetailGold.stalls.name : 'null'}
                                                     </option>
-                                                ))}
-                                            <option value="null">Null</option>
-                                        </select>
-                                    </div>
-                                </form>
-                                <div className="flex">
-                                    <button
-                                        onClick={handleYesNo}
-                                        className="mr-2 px-4 py-2 bg-blue-500 text-white rounded-md"
-                                        style={{ width: '5rem' }}
-                                    >
-                                        Save
-                                    </button>
-                                    <button
-                                        onClick={closeModal}
-                                        className="mr-2 ml-0 px-4 py-2 bg-gray-500 text-white rounded-md"
-                                        style={{ width: '5rem' }}
-                                    >
-                                        Close
-                                    </button>
-                                </div>
+                                                    {stalls
+                                                        .filter(stall => stall.description === 'retail gold' || stall.description === 'counter')
+                                                        .map(stall => (
+                                                            <option key={stall.id} value={stall.id}>
+                                                                {stall.name} - {stall.description && formatUpper(stall.description)}
+                                                            </option>
+                                                        ))}
+                                                    <option value="null">Null</option>
+                                                </select>
+                                            </div>
+                                        </form>
+
+                                        <div className="flex">
+
+                                            <button
+                                                onClick={handleYesNo}
+                                                className="mr-2 px-4 py-2 bg-blue-500 text-white rounded-md"
+                                                style={{ width: '5rem' }}
+                                            >
+                                                Save
+                                            </button>
+                                            <button
+                                                onClick={closeModal}
+                                                className="mr-2 ml-0 px-4 py-2 bg-gray-500 text-white rounded-md"
+                                                style={{ width: '5rem' }}
+                                            >
+                                                Close
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
                     )}

@@ -118,7 +118,7 @@ const Stall = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-white mx-5 pt-5 mb-5 rounded">
             <div>
-                <h1 className="text-3xl font-bold text-center text-blue-800 mb-4">Stall revenue list</h1>
+                <h1 className="text-3xl font-bold text-center text-blue-800 mb-4">Stall Revenue List</h1>
                 <div className="flex space-x-4 mb-4">
                     <select
                         value={selectedMonth}

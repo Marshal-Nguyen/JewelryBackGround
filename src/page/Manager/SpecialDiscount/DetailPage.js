@@ -31,11 +31,24 @@ const DetailPage = () => {
     useEffect(() => {
         const fetchCustomerData = async () => {
             try {
-                const res = await axios.get(`https://jssatsproject.azurewebsites.net/api/customer/getbyphone?phonenumber=${phone}`);
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error("No token found");
+                }
+
+                const res = await axios.get(
+                    `https://jssatsproject.azurewebsites.net/api/customer/getbyphone?phonenumber=${phone}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+
                 if (res && res.data && res.data.data) {
                     setCustomerData(res.data.data[0]);
                 }
-                console.log('>>> check customer', res)
+                console.log('>>> check customer', res);
             } catch (error) {
                 console.error('Error fetching customer details:', error);
             }
@@ -43,7 +56,20 @@ const DetailPage = () => {
 
         const fetchSellOrderData = async () => {
             try {
-                const res = await axios.get(`https://jssatsproject.azurewebsites.net/api/sellorder/getbyid?id=${id}`);
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error("No token found");
+                }
+
+                const res = await axios.get(
+                    `https://jssatsproject.azurewebsites.net/api/sellorder/getbyid?id=${id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+
                 if (res && res.data && res.data.data) {
                     setSellOrderData(res.data.data[0]);
                 }

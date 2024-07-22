@@ -62,12 +62,21 @@ const CustomerDetail = () => {
                 setTotalPages(0);
         }
     }, [activeTab, totalPagesSell, totalPagesBuy, totalPagesPayment, pageSize]);
-
-
     useEffect(() => {
         const fetchCustomerData = async () => {
             try {
-                const customerRes = await axios.get(`https://jssatsproject.azurewebsites.net/api/customer/getbyphone?phonenumber=${phone}`);
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error("No token found");
+                }
+                const customerRes = await axios.get(
+                    `https://jssatsproject.azurewebsites.net/api/customer/getbyphone?phonenumber=${phone}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
                 if (customerRes && customerRes.data && customerRes.data.data) {
                     setCustomerData(customerRes.data.data[0]);
                 }
@@ -78,58 +87,85 @@ const CustomerDetail = () => {
 
         const fetchSellOrderData = async () => {
             try {
-                const sellOrderRes = await axios.get(`https://jssatsproject.azurewebsites.net/api/customer/getSellOrderByPhone?phoneNumber=${phone}&pageSize=${pageSize}&pageIndex=${currentPage}`);
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error("No token found");
+                }
+                const sellOrderRes = await axios.get(
+                    `https://jssatsproject.azurewebsites.net/api/customer/getSellOrderByPhone?phoneNumber=${phone}&pageSize=${pageSize}&pageIndex=${currentPage}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
                 if (sellOrderRes && sellOrderRes.data && sellOrderRes.data.data) {
                     setSellOrderData(sellOrderRes.data.data);
                     setTotalPagesSell(sellOrderRes.data.totalPages);
-                    // setTotalPages(sellOrderRes.data.totalPages);
                 }
             } catch (error) {
                 console.error('Error fetching sell orders:', error);
             }
         };
+
         const fetchBuyOrderData = async () => {
             try {
-                const buyOrderRes = await axios.get(`https://jssatsproject.azurewebsites.net/api/customer/getBuyOrdersByPhone?phoneNumber=${phone}&pageSize=${pageSize}&pageIndex=${currentPage}`);
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error("No token found");
+                }
+                const buyOrderRes = await axios.get(
+                    `https://jssatsproject.azurewebsites.net/api/customer/getBuyOrdersByPhone?phoneNumber=${phone}&pageSize=${pageSize}&pageIndex=${currentPage}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
                 if (buyOrderRes && buyOrderRes.data && buyOrderRes.data.data) {
                     setBuyOrderData(buyOrderRes.data.data);
                     setTotalPagesBuy(buyOrderRes.data.totalPages);
-                    // setTotalPages(buyOrderRes.data.totalPages);
                 }
             } catch (error) {
-                console.error('Error fetching sell orders:', error);
+                console.error('Error fetching buy orders:', error);
             }
         };
+
         const fetchPaymentData = async () => {
             try {
-                const paymentRes = await axios.get(`https://jssatsproject.azurewebsites.net/api/customer/getPaymentsByPhone?phoneNumber=${phone}&pageSize=${pageSize}&pageIndex=${currentPage}`);
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error("No token found");
+                }
+                const paymentRes = await axios.get(
+                    `https://jssatsproject.azurewebsites.net/api/customer/getPaymentsByPhone?phoneNumber=${phone}&pageSize=${pageSize}&pageIndex=${currentPage}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
                 if (paymentRes && paymentRes.data && paymentRes.data.data) {
                     setPaymentData(paymentRes.data.data);
                     setTotalPagesPayment(paymentRes.data.totalPages);
-                    // setTotalPages(buyOrderRes.data.totalPages);
                 }
             } catch (error) {
-                console.error('Error fetching sell orders:', error);
+                console.error('Error fetching payment data:', error);
             }
         };
+
         if (phone) {
             if (searchQuery) {
-
                 handleSearchSell(searchQuery);
                 handleSearchBuy(searchQuery);
                 handleSearchPay(searchQuery);
             } else {
-
                 fetchCustomerData();
                 fetchSellOrderData();
                 fetchBuyOrderData();
                 fetchPaymentData();
-
             }
-            // console.log('>>>> gtessttt', totalPages)
         }
-
-
     }, [phone, currentPage, pageSize, activeTab, searchQuery]);
     // 'sellOrder', 'buyOrder', 'payment'
     const handleDetailClick = async (id, activeList) => {
@@ -188,8 +224,8 @@ const CustomerDetail = () => {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                // console.log('check detail click', res.data.data[0])
-                if (res && res.data) {
+                console.log('check detail click', res)
+                if (res && res.data && res.data.data[0]) {
                     const details = res.data.data[0];
                     // console.log('check detail click', res.data.data[0].sellOrderDetails)
                     setSelectedSellOrder(details);
@@ -640,11 +676,11 @@ const CustomerDetail = () => {
                                             </td>
                                             <td className="text-3xl text-[#000099] pl-2 rounded-r-lg">
                                                 {item.sellOrderCode ? (
-                                                    <CiViewList onClick={() => handleDetailClick(item.sellorderId, activeTab)} />
+                                                    <CiViewList onClick={() => handleDetailClick(item.sellOrderId, activeTab)} />
                                                 ) : item.buyOrderCode ? (
                                                     <CiViewList onClick={() => handleDetailClick(item.buyOrderId, activeTab)} />
                                                 ) : null}
-                                                {/* <CiViewList onClick={() => handleDetailClick(item.sellorderId, activeTab)} /> */}
+
 
                                             </td>
 
@@ -926,13 +962,11 @@ const CustomerDetail = () => {
                                             <thead className="w-full rounded-lg bg-blue-900 text-base font-semibold text-white sticky top-0">
                                                 <tr className="whitespace-nowrap text-xl font-bold">
                                                     <th className="py-3 pl-3 rounded-l-lg" title="Column 1"></th>
-                                                    <th className="py-3" title="Category">Cat.</th>
+                                                    <th className="py-3" title="Category">Category</th>
                                                     <th className="py-3" title="Name">Name</th>
-                                                    <th className='text-center' title="Material Name">Mat. Name</th>
-                                                    <th className='text-center'>Quantity</th>
-                                                    <th className='text-center' title="Diamond Grading Code">DGC</th>
+                                                    <th className='text-center' >Material</th>
                                                     <th title="Value">Value</th>
-                                                    <th className="rounded-r-lg" title="Purchase Price Ratio">PP Ratio</th>
+                                                    <th className="text-center rounded-r-lg" title="Purchase Price Ratio">Purchase Price Ratio</th>
 
                                                 </tr>
                                             </thead>
@@ -943,18 +977,7 @@ const CustomerDetail = () => {
                                                         <td>{item.categoryType}</td>
                                                         <td>{item.productName}</td>
                                                         <td className='text-center'>{item.materialName}</td>
-                                                        <td className='  text-center'>
-                                                            <span className='text-center'>{item.materialWeight || 0}</span>
-                                                            {item.caregoryId === '7'
-                                                                ? <span className=' ml-2'>carat</span>
-                                                                : item.caregoryId === '6' || item.caregoryId === '5'
-                                                                    ? <span className='ml-2 '>grams</span>
-                                                                    : <span className=' ml-2'>piece</span>
-                                                            }
-                                                        </td>
 
-
-                                                        <td className='text-center'>{item.diamondGradingCode || 'null'}</td>
                                                         <td>{formatCurrency(item.unitPrice)}</td>
                                                         <td className="rounded-r-lg text-center">
                                                             {item.purchasePriceRatio}

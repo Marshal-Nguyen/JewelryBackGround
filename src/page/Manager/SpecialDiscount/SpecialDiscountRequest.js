@@ -50,7 +50,7 @@ const SpecialDiscountRequest = () => {
             if (!token) {
                 throw new Error("No token found");
             }
-            const res = await axios.get(`https://jssatsproject.azurewebsites.net/api/SpecialDiscountRequest/getall?pageIndex=${currentPage}&pageSize=${pageSize}&ascending=true`, {
+            const res = await axios.get(`https://jssatsproject.azurewebsites.net/api/SpecialDiscountRequest/getall?pageIndex=${currentPage}&pageSize=${pageSize}&ascending=false`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

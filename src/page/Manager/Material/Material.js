@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import TradingViewWidget from './TradingViewWidget';
 const Material = () => {
     const [originalListPrice, setOriginalListPrice] = useState([]);
     const [listPrice, setListPrice] = useState([]);
@@ -112,10 +112,21 @@ const Material = () => {
             maximumFractionDigits: 0
         }).format(value);
     };
+    const formatDateTime = (isoString) => {
+        const date = new Date(isoString);
 
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const year = date.getFullYear();
+
+        return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`;
+    };
     return (
-        <div className="flex items-center justify-center min-h-screen bg-white px-5 py-5 rounded">
-            <div className="w-full max-w-screen-lg">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-white px-5 py-5 rounded">
+            <div className="w-full max-w-screen-lg mb-6">
                 <h1 className="text-3xl font-bold text-center text-blue-800 mb-6">Gold Price Today</h1>
                 <div className="flex justify-center items-center mb-6">
                     <div className="text-center mr-4">
@@ -127,27 +138,32 @@ const Material = () => {
                 </div>
                 <div className="overflow-x-auto">
                     <table className="min-w-full bg-white border border-gray-300">
-                        <thead className="bg-sky-300 text-white text-left">
+                        <thead className="w-full rounded-lg bg-blue-900 text-base font-semibold text-white  sticky top-0">
                             <tr>
                                 <th className="py-3 px-4 border border-gray-300"></th>
                                 <th className="py-3 px-4 border border-gray-300">Name</th>
                                 <th className="py-3 px-4 border border-gray-300">Buy Price (₫)</th>
                                 <th className="py-3 px-4 border border-gray-300">Sell Price (₫)</th>
+                                <th className="py-3 px-4 border border-gray-300">Last Update</th>
                             </tr>
                         </thead>
                         <tbody>
                             {listPrice.map((item, index) => (
                                 <tr key={index} className="hover:bg-gray-100">
                                     <td className="py-4 px-4 border border-gray-300">{index + 1}</td>
-                                    <td className="py-4 px-4 border border-gray-300">{materials[item.materialId]}</td>
+                                    <td className="py-4 px-4 border border-gray-300"><strong> {materials[item.materialId]} </strong></td>
                                     <td className="py-4 px-4 border border-gray-300 text-right">{formatCurrency(item.buyPrice)}</td>
                                     <td className="py-4 px-4 border border-gray-300 text-right">{formatCurrency(item.sellPrice)}</td>
+                                    <td className="py-4 px-4 border border-gray-300 text-right">{formatDateTime(item.effectiveDate)}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
             </div>
+            {/* <div className="w-full max-w-screen-lg">
+                <TradingViewWidget />
+            </div> */}
         </div>
     );
 };

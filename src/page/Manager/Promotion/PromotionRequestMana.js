@@ -31,7 +31,7 @@ const PromotionRequestMana = () => {
     startDate: '',
     endDate: '',
     managerID: localStorage.getItem('staffId'),
-    createdAt: new Date().toISOString(),
+    createdAt: new Date(new Date().setHours(new Date().getHours() + 7)).toISOString(),
     categoriIds: []
   });
 
@@ -227,12 +227,17 @@ const PromotionRequestMana = () => {
 
   const validateForm = () => {
     let tempErrors = {};
-    let today = new Date();
-    if (!newPromotion.discountRate) tempErrors.discountRate = 'DiscountRate is required';
-    if (!newPromotion.description) tempErrors.description = 'Description is required';
 
+    if (!newPromotion.discountRate) tempErrors.discountRate = 'DiscountRate is required';
+    if (newPromotion.discountRate >= 1) tempErrors.discountRate = 'DiscountRate must be less than 1';
+    if (newPromotion.discountRate <= 0) tempErrors.discountRate = 'DiscountRate must be greater than 0';
+    if (!newPromotion.description) tempErrors.description = 'Description is required';
+    let today = new Date();
     if (!newPromotion.startDate) tempErrors.startDate = 'StartDate is required';
     else if (newPromotion.startDate < today) {
+      tempErrors.startDate = 'Start Date must be greater than or equal to Today';
+    }
+    else if (new Date(newPromotion.startDate) < today) {
       tempErrors.startDate = 'Start Date must be greater than or equal to Today';
     }
 
@@ -241,7 +246,7 @@ const PromotionRequestMana = () => {
       tempErrors.endDate = 'End Date must be greater than Start Date';
 
     }
-    else if (newPromotion.endDate < today) {
+    else if (new Date(newPromotion.endDate) < today) {
       tempErrors.endDate = 'End Date must be greater than or equal to Today';
     }
 
@@ -284,7 +289,7 @@ const PromotionRequestMana = () => {
           startDate: '',
           endDate: '',
           managerID: localStorage.getItem('staffId'),
-          createdAt: new Date().toISOString(),
+          createdAt: new Date(new Date().setHours(new Date().getHours() + 7)).toISOString(),
           categoriIds: []
         });
       }
@@ -305,10 +310,10 @@ const PromotionRequestMana = () => {
       startDate: '',
       endDate: '',
       managerID: localStorage.getItem('staffId'),
-      createdAt: new Date().toISOString(),
+      createdAt: new Date(new Date().setHours(new Date().getHours() + 7)).toISOString(),
       categoriIds: []
     });
-
+    setErrors('');
   };
 
   const getNamefromDescription = (value) => {
@@ -478,7 +483,7 @@ const PromotionRequestMana = () => {
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Start Date</label>
                 <input
-                  type="date"
+                  type="datetime-local"
                   name="startDate"
                   value={newPromotion.startDate}
                   onChange={handleInputChange}
@@ -490,7 +495,7 @@ const PromotionRequestMana = () => {
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">End Date</label>
                 <input
-                  type="date"
+                  type="datetime-local"
                   name="endDate"
                   value={newPromotion.endDate}
                   onChange={handleInputChange}

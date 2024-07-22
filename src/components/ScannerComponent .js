@@ -45,8 +45,14 @@ const ScannerComponent = ({ onQRScan, isScanning }) => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        width: '70px', 
-        height: '70px',
+        width: '360px', 
+        height: '549px',
+        zIndex: '1000',
+        position:'relative',
+        top:'486px',
+        right:'-233px'
+
+  
       }}
     >
       <QrScanner

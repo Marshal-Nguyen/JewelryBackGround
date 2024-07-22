@@ -45,12 +45,12 @@ export const sidebarMenuAdmin = [
             },
             {
                 path: 'Employee',
-                text: 'Employee',
+                text: 'Staff Revenue',
                 iconAdmin: <CgUserList size={24} color="#000055" />
             },
             {
                 path: 'Stall',
-                text: 'Stall',
+                text: 'Stall Revenue',
                 iconAdmin: <GrDocumentStore size={24} color="#000055" />
             }
 

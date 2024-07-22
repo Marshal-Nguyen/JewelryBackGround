@@ -112,8 +112,16 @@ const Ring = () => {
   };
   const getRingSearch = async (searchTerm, page) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error("No token found");
+      }
       const res = await axios.get(
-        `https://jssatsproject.azurewebsites.net/api/Product/Search?categoryId=5&searchTerm=${searchTerm}&pageIndex=${page}&pageSize=10&includeNullStalls=false`
+        `https://jssatsproject.azurewebsites.net/api/Product/Search?categoryId=5&searchTerm=${searchTerm}&pageIndex=${page}&pageSize=10&includeNullStalls=false`,{
+          headers: {
+             Authorization: `Bearer ${token}`
+          }
+        }
       );
       if (res.data && res.data.data) {
         setListRing(res.data.data);

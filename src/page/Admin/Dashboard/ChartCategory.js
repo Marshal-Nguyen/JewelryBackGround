@@ -17,10 +17,25 @@ const PieChartCategory = () => {
 
     const fetchData = async () => {
         try {
-            const response = await fetch(`https://jssatsproject.azurewebsites.net/api/Staff/getTop6ByMonth?startDate=${startDate}&endDate=${endDate}`);
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error("No token found");
+            }
+
+            const response = await fetch(
+                `https://jssatsproject.azurewebsites.net/api/Staff/getTop6ByMonth?startDate=${startDate}&endDate=${endDate}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'  // Optional, depending on your API requirements
+                    }
+                }
+            );
+
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
+
             const data = await response.json();
             setResult(data);
 
@@ -31,13 +46,14 @@ const PieChartCategory = () => {
                 setChartData({
                     series: seriesData,
                 });
-                setLabelss(labelsData)
-                console.log('??? check chart', chartData)
+                setLabelss(labelsData);
+                console.log('??? check chart', chartData);
             }
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
+
 
     const handleButtonClick = () => {
         setChartData(prevData => ({

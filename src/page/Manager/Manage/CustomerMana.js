@@ -62,7 +62,20 @@ const CustomerMana = () => {
     const getCustomer = async (pageIndex) => {
         setLoadingApi(true);
         try {
-            const res = await axios.get(`https://jssatsproject.azurewebsites.net/api/customer/getall?pageIndex=${pageIndex}&pageSize=${pageSize}`);
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error("No token found");
+            }
+
+            const res = await axios.get(
+                `https://jssatsproject.azurewebsites.net/api/customer/getall?pageIndex=${pageIndex}&pageSize=${pageSize}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
             if (res && res.data && res.data.data) {
                 const customers = res.data.data;
                 if (customers.length > 0) {
@@ -82,6 +95,7 @@ const CustomerMana = () => {
         setLoadingApi(false);
     };
 
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
@@ -99,7 +113,20 @@ const CustomerMana = () => {
     const handleSearch = async () => {
         setLoadingApi(true);
         try {
-            const res = await axios.get(`https://jssatsproject.azurewebsites.net/api/customer/search?searchTerm=${searchQuery}&pageIndex=${currentPage}&pageSize=${pageSize}`);
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error("No token found");
+            }
+
+            const res = await axios.get(
+                `https://jssatsproject.azurewebsites.net/api/customer/search?searchTerm=${searchQuery}&pageIndex=${currentPage}&pageSize=${pageSize}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
             if (res && res.data && res.data.data) {
                 const customers = res.data.data;
                 // console.log('>>> check ressss', res)
@@ -117,6 +144,7 @@ const CustomerMana = () => {
         setLoadingApi(false);
     };
 
+
     const handleEditClick = (customer) => {
         setSelectedCustomer(customer);
         setIsModalOpen(true);
@@ -131,10 +159,21 @@ const CustomerMana = () => {
     const handleSaveChanges = async () => {
         setLoadingApi(true);
         try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error("No token found");
+            }
+
             const res = await axios.put(
                 `https://jssatsproject.azurewebsites.net/api/Customer/UpdateCustomer?id=${selectedCustomer.id}`,
-                selectedCustomer
+                selectedCustomer,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
             );
+
             if (res.status === 200) {
                 const updatedCustomers = originalListCustomer.map((customer) =>
                     customer.id === selectedCustomer.id ? selectedCustomer : customer
@@ -151,6 +190,7 @@ const CustomerMana = () => {
         }
         setLoadingApi(false);
     };
+
     const validatePhoneNumber = (phone) => {
         const phoneRegex = /^(0[3|5|7|8|9])+([0-9]{8})\b/;
         return phoneRegex.test(phone);
@@ -158,15 +198,42 @@ const CustomerMana = () => {
     const validateForm = () => {
         let tempErrors = {};
 
-        if (!selectedCustomer.firstname) tempErrors.firstname = 'First name is required';
-        if (!selectedCustomer.lastname) tempErrors.lastname = 'Last name is required';
-        if (!selectedCustomer.phone) tempErrors.phone = 'Phone is required';
-        else if (!validatePhoneNumber(selectedCustomer.phone)) tempErrors.phone = 'Invalid phone number';
-        if (!selectedCustomer.email) tempErrors.email = 'Email is required';
-        if (!selectedCustomer.gender) tempErrors.gender = 'Gender is required';
+        // Function to check if each word in a string is alphabetic with the first letter capitalized
+        const isEachWordAlphaWithFirstLetterCapitalized = (str) => {
+            return str.split(' ').every(word => /^[A-Z][a-z]*$/.test(word));
+        };
+
+        if (!selectedCustomer.firstname) {
+            tempErrors.firstname = 'First name is required';
+        } else if (!isEachWordAlphaWithFirstLetterCapitalized(selectedCustomer.firstname)) {
+            tempErrors.firstname = 'First name must be alphabetic with the first letter capitalized';
+        }
+
+        if (!selectedCustomer.lastname) {
+            tempErrors.lastname = 'Last name is required';
+        } else if (!isEachWordAlphaWithFirstLetterCapitalized(selectedCustomer.lastname)) {
+            tempErrors.lastname = 'Last name must be alphabetic with each word capitalized';
+        }
+
+        if (!selectedCustomer.phone) {
+            tempErrors.phone = 'Phone is required';
+        } else if (!validatePhoneNumber(selectedCustomer.phone)) {
+            tempErrors.phone = 'Invalid phone number';
+        }
+
+        if (!selectedCustomer.email) {
+            tempErrors.email = 'Email is required';
+        }
+
+        if (!selectedCustomer.gender) {
+            tempErrors.gender = 'Gender is required';
+        }
+
         setErrors(tempErrors);
         return Object.keys(tempErrors).length === 0;
     };
+
+
     const renderModal = () => {
         if (!isModalOpen || !selectedCustomer) return null;
         return (
@@ -269,7 +336,7 @@ const CustomerMana = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-white mx-5 pt-5 mb-5 rounded">
             <div>
-                <h1 ref={scrollRef} className="text-3xl font-bold text-center text-blue-800 mb-4">Customer management list</h1>
+                <h1 ref={scrollRef} className="text-3xl font-bold text-center text-blue-800 mb-4">Customer Management List</h1>
                 <div className="flex justify-between mb-4">
                     <div className="flex items-center ml-2">
                         <label className="block mb-1 mr-2">Page Size:</label>

@@ -196,7 +196,7 @@ const Payment = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-white mx-5 pt-5 mb-5 rounded">
             <div>
-                <h1 ref={scrollRef} className="text-3xl font-bold text-center text-blue-800 mb-4">List of payment</h1>
+                <h1 ref={scrollRef} className="text-3xl font-bold text-center text-blue-800 mb-4">List Of Payment</h1>
                 <div className="flex justify-between mb-4">
                     <div className="flex items-center ml-2">
                         <label className="block mb-1 mr-2">Page Size:</label>
@@ -213,16 +213,6 @@ const Payment = () => {
                             ))}
                         </select>
                     </div>
-                    {/* <div className="relative w-[400px]">
-                        <input
-                            type="text"
-                            placeholder="Search "
-                            value={searchQuery1}
-                            onChange={handleSearchChange}
-                            className="px-3 py-2 border border-gray-300 rounded-md w-full"
-                        />
-                        <IoIosSearch className="absolute top-0 right-0 mr-3 mt-3 cursor-pointer text-gray-500" onClick={handleSetQuery} />
-                    </div> */}
                 </div>
                 <div className="w-[1200px] overflow-hidden ">
                     <table className="font-inter w-full table-auto text-left">

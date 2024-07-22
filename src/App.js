@@ -66,6 +66,7 @@ import SellOrder from './page/Manager/Report/SellOrder';
 import BuyOrder from './page/Manager/Report/BuyOrder';
 import DiamondPrice from './page/Manager/Material/DiamondPrice';
 import StaffDetail from './page/Manager/Manage/StaffDetail';
+import TradingViewWidget from './page/Manager/Material/TradingViewWidget';
 
 function App() {
   // test redux có hoạt động không
@@ -90,7 +91,7 @@ function App() {
             <Route path={path.SELLORDER} element={<SellOrder />} />
             <Route path={path.BUYORDER} element={<BuyOrder />} />
             <Route path={path.PAYMENT} element={<Payment />} />
-            <Route path={path.EMPLOYEE} element={<EmployeeMana />} />
+            <Route path={path.EMPLOYEE} element={<Employee />} />
             <Route path={path.STALL} element={<Stall />} />
 
 
@@ -117,6 +118,7 @@ function App() {
             <Route path={path.DIAMONDPRICE} element={<DiamondPrice />} />
             <Route path={path.PRICE} element={<Price />} />
             <Route path={path.MATERIAL} element={<Material />} />
+            <Route path={path.WORLDGOLDPRICE} element={<TradingViewWidget />} />
 
             <Route path={path.DIAMONDMANAGER} element={<DiamondManager />} />
             <Route path={'createProduct'} element={<CreateProduct />} />

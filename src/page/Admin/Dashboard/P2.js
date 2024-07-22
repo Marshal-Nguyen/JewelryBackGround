@@ -4,7 +4,11 @@ import moment from 'moment'; // Import moment.js for date manipulation
 import axios from 'axios';
 import ReactApexChart from 'react-apexcharts';
 import { FaFileDownload } from "react-icons/fa";
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 const P2 = () => {
+    const navigate = useNavigate();
+
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [datesInRange, setDatesInRange] = useState([]);

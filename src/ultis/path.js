@@ -40,51 +40,52 @@ const path = {
     CS_ONPROCESSBUY: 'cs_onprocessBuy',
     CS_COMPLETEBUY: 'cs_completeBuy',
     PAYMENTRESULT: 'payment-result',
-    // ADMIN
-    DASHBOARD: 'Dashboard',
-    MANAGE: 'Manage',
-    CUSTOMERADMIN: 'customeradmin',
-    PRODUCTADMIN: 'productadmin',
-    STAFF: 'staff',
-    POINT: 'point',
+   // ADMIN
+   DASHBOARD: 'Dashboard',
+   MANAGE: 'Manage',
+   CUSTOMERADMIN: 'customeradmin',
+   PRODUCTADMIN: 'productadmin',
+   STAFF: 'staff',
+   POINT: 'point',
 
-    REPORT: 'Report',
-    INVOICE: 'Invoice',
-    PRODUCSOLD: 'ProductSold',
-    EMPLOYEE: 'Employee',
+   REPORT: 'Report',
+   INVOICE: 'Invoice',
+   PRODUCSOLD: 'ProductSold',
+   EMPLOYEE: 'Employee',
 
-    PROMOTIONADMIN: 'Promotionadmin',
-    PROMOTIONLIST: 'promotionlist',
-    PROMOTIONREQUEST: 'promotionrequest',
+   PROMOTIONADMIN: 'Promotionadmin',
+   PROMOTIONLIST: 'promotionlist',
+   PROMOTIONREQUEST: 'promotionrequest',
 
-    RETURNPOLICY: 'ReturnPolicy',
+   RETURNPOLICY: 'ReturnPolicy',
 
-    VOIDBILL: 'VoidBill',
+   VOIDBILL: 'VoidBill',
 
-    // end admin
+   // end admin
 
 
-    // manager
-    WAREHOUSEMANAGER: 'warehouseManager',
-    DIAMONDWAREHOUSE: 'diamondWarehouse',
-    JEWELRYWAREHOUSE: 'jewelryWarehouse',
-    WHOLESALEGOLDWAREHOUSE: 'wholesalegoldWarehouse',
-    RETAILGOLDWAREHOUSE: 'rgoldWarehouse',
-    PRODUCTMANAGER: 'productManager',
-    DIAMONDMANAGER: 'diamond',
-    RETAILGOLDMANAGER: 'rgold',
-    PROMOTIONMANAGER: 'Promotionmanager',
-    CUSTOMERMANA: 'customerMana',
-    PRODUCTMANA: 'productMana',
-    STALL: 'Stall',
-    SELLORDER: 'sellOrder',
-    BUYORDER: 'buyOrder',
-    DIAMONDPRICE: 'diamondPrice',
-    PRICE: 'price',
-    MATERIAL: 'material',
-    SPECIALDISCOUNT: 'specialDiscount',
-    PAYMENT: 'Payment'
-    // end manager
+   // manager
+   WAREHOUSEMANAGER: 'warehouseManager',
+   DIAMONDWAREHOUSE: 'diamondWarehouse',
+   JEWELRYWAREHOUSE: 'jewelryWarehouse',
+   WHOLESALEGOLDWAREHOUSE: 'wholesalegoldWarehouse',
+   RETAILGOLDWAREHOUSE: 'rgoldWarehouse',
+   PRODUCTMANAGER: 'productManager',
+   DIAMONDMANAGER: 'diamond',
+   RETAILGOLDMANAGER: 'rgold',
+   PROMOTIONMANAGER: 'Promotionmanager',
+   CUSTOMERMANA: 'customerMana',
+   PRODUCTMANA: 'productMana',
+   STALL: 'Stall',
+   SELLORDER: 'sellOrder',
+   BUYORDER: 'buyOrder',
+   DIAMONDPRICE: 'diamondPrice',
+   PRICE: 'price',
+   MATERIAL: 'material',
+   WORLDGOLDPRICE: 'worldGoldPrice',
+   SPECIALDISCOUNT: 'specialDiscount',
+   PAYMENT: 'Payment'
+   // end manager
 
 
 }

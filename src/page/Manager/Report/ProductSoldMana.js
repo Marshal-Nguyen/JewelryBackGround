@@ -144,7 +144,7 @@ const ProductSoldMana = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-white mx-5 pt-5 mb-5 rounded">
             <div>
-                <h1 className="text-3xl font-bold text-center text-blue-800 mb-4">List of product sold</h1>
+                <h1 className="text-3xl font-bold text-center text-blue-800 mb-4">List Of Product Sold</h1>
                 <div className="flex mb-4">
                     <div className="relative">
                         <input
@@ -181,23 +181,7 @@ const ProductSoldMana = () => {
                                     <td >{item.productName}</td>
                                     <td >{formatCurrency(item.unitPrice)}</td>
                                     <td >{item.quantity}</td>
-                                    {/* <td >
-                                        {item.categoryId === 1
-                                            ? <img src={logoRing} className="w-20 h-20" />
-                                            : item.categoryId === 2
-                                                ? <img src={logoEarrings} className="w-20 h-20" />
-                                                : item.categoryId === 3
-                                                    ? <img src={logoBracelet} className="w-20 h-20" />
-                                                    : item.categoryId === 4
-                                                        ? <img src={logoNecklace} className="w-20 h-20" />
-                                                        : item.categoryId === 5
-                                                            ? <img src={logoRgold} className="w-20 h-20" />
-                                                            : item.categoryId === 6
-                                                                ? <img src={logoWgold} className="w-20 h-20" />
-                                                                : <img src={logoDiamond} className="w-20 h-20" />
 
-                                        }
-                                    </td> */}
                                     <td><img src={logoDiamond} className="w-20 h-20" /></td>
                                     <td >{item.promotionRate}</td>
                                     <td >null</td>

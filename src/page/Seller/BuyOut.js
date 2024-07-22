@@ -23,14 +23,16 @@ const BuyOut = () => {
   const [quantity, setQuantity] = useState(1);
 
   const handleAddProduct = () => {
-    let newMaterialId = materialId;
-    let newMaterialWeight = materialWeight;
 
-    if (categoryTypeId === '7') {
-      newMaterialId = null;
-      newMaterialWeight = null;
+
+    if (categoryTypeId === '1') {
+      setMaterialId(null);
+      setMaterialWeight(null);
+      setQuantity(1);
     }
-
+    if (categoryTypeId !== '3') {
+      setQuantity(1);
+    }
     const newProduct = {
       productName,
       diamondGradingCode,
@@ -40,6 +42,7 @@ const BuyOut = () => {
       buyPrice: parseFloat(buyPrice),
       quantity: parseInt(quantity)
     };
+    console.log('data add',newProduct)
     dispatch(addProductToList(newProduct));
     // Reset form fields
     setProductName('');
@@ -84,7 +87,7 @@ const BuyOut = () => {
       if (!token) {
         throw new Error('No token found')
       }
-      const res = await axios.get('https://jssatsproject.azurewebsites.net/api/productcategory/getall',{
+      const res = await axios.get('https://jssatsproject.azurewebsites.net/api/productcategorytype/getall',{
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -132,6 +135,7 @@ const BuyOut = () => {
       toast.error('Some products have missing name or price. Please check and correct the entries.');
       return;
     }
+   
     const orderData = {
       customerPhoneNumber: CustomerPhone,
       staffId: 4,
@@ -139,7 +143,7 @@ const BuyOut = () => {
       description,
       products: ProductListNone
     };
-    console.log(orderData)
+    console.log('OrderDataa',orderData)
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -264,33 +268,33 @@ const BuyOut = () => {
               />
             </div>
             
-            {categoryTypeId !== '7' && (
-  <>
-               <div className="w-11/12 h-14 flex rounded-lg border-2 border-solid border-[#211758b4] items-center px-2">
-               <select
-                 className="w-full h-14 text-center bg-transparent focus:outline-none text-black"
-                 value={materialId}
-                 onChange={(e) => setMaterialId(e.target.value)}
-                 required
-               >
-                 <option value="" disabled>Select Material</option>
-                 {materials.map((material) => (
-                   <option key={material.id} value={material.id}>{material.name}</option>
-                 ))}
-               </select>
-             </div>
-             <div className="w-11/12 px-2 h-14 flex rounded-lg border-2 border-solid border-[#211758b4]  items-center">
-               <input
-                 className="w-full h-14 text-center bg-transparent focus:outline-none text-black"
-                 type="number"
-                 min='1'
-                 placeholder="Material Weight"
-                 value={materialWeight}
-                 onChange={(e) => setMaterialWeight(e.target.value)}
-               />
-             </div>
-             </>
-)}
+            {categoryTypeId !== '1' && (
+              <>
+                <div className="w-11/12 h-14 flex rounded-lg border-2 border-solid border-[#211758b4] items-center px-2">
+                  <select
+                    className="w-full h-14 text-center bg-transparent focus:outline-none text-black"
+                    value={materialId}
+                    onChange={(e) => setMaterialId(e.target.value)}
+                    required
+                  >
+                    <option value="" disabled>Select Material</option>
+                    {materials.map((material) => (
+                      <option key={material.id} value={material.id}>{material.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="w-11/12 px-2 h-14 flex rounded-lg border-2 border-solid border-[#211758b4]  items-center">
+                  <input
+                    className="w-full h-14 text-center bg-transparent focus:outline-none text-black"
+                    type="number"
+                    min='1'
+                    placeholder="Material Weight"
+                    value={materialWeight}
+                    onChange={(e) => setMaterialWeight(e.target.value)}
+                  />
+                </div>
+              </>
+            )}
            
             <div className="w-11/12 px-2 h-14 flex rounded-lg border-2 border-solid border-[#211758b4]  items-center">
               <input
@@ -302,18 +306,21 @@ const BuyOut = () => {
                 required
               />
             </div>
-            <div className="w-11/12 px-2 h-14 flex rounded-lg border-2 border-solid border-[#211758b4]  items-center">
-              <input
-                className="w-full h-14 text-center bg-transparent focus:outline-none text-black"
-                type="number"
-                min ={1}
-                
-                placeholder="Quantity: 1"
-                // value={quantity}
-                // onChange={(e) => setQuantity(e.target.value)}
-                readOnly
-              />
-            </div>
+            
+            {categoryTypeId == '3' && (
+               <div className="w-11/12 px-2 h-14 flex rounded-lg border-2 border-solid border-[#211758b4]  items-center">
+               <input
+                 className="w-full h-14 text-center bg-transparent focus:outline-none text-black"
+                 type="number"
+                 min ={1}
+                 
+                 placeholder="Quantity:"
+                 value={quantity}
+                 onChange={(e) => setQuantity(e.target.value)}
+                 required
+               />
+             </div>
+            )}
             <div className="w-11/12  h-14 flex rounded-lg justify-center  items-center">
               <button className='m-0' type="submit">Add Product</button>
             </div>

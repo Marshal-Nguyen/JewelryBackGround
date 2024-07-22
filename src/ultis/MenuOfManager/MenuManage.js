@@ -22,7 +22,7 @@ const { GrDocumentStore,
     VscGitPullRequestGoToChanges,
     GiGoldNuggets,
     GiReceiveMoney, GiEmeraldNecklace, GiCrystalEarrings, GiDiamondRing, GiNecklaceDisplay, AiOutlineGold,
-    LiaMoneyBillWaveSolid, LiaCircleNotchSolid, IoDiamondOutline, PiDiamondsFourLight, MdWarehouse, MdOutlinePriceChange, FaMoneyBillTrendUp, TbBasketDiscount, GiStoneBlock, MdOutlinePayments, RiCopperDiamondLine } = IconManager
+    LiaMoneyBillWaveSolid, LiaCircleNotchSolid, IoDiamondOutline, PiDiamondsFourLight, MdWarehouse, MdOutlinePriceChange, GiWorld, FaMoneyBillTrendUp, TbBasketDiscount, GiStoneBlock, MdOutlinePayments, RiCopperDiamondLine } = IconManager
 
 export const sidebarMenuManager = [
     {
@@ -45,13 +45,18 @@ export const sidebarMenuManager = [
             },
             {
                 path: 'price',
-                text: 'Price',
+                text: 'Update Gold Price',
                 iconAdmin: <FaMoneyBillTrendUp size={24} color="#000055" />,
             },
             {
                 path: 'material',
-                text: 'Material',
+                text: 'Material Price',
                 iconAdmin: <GiStoneBlock size={24} color="#000055" />,
+            },
+            {
+                path: 'worldGoldPrice',
+                text: 'World Gold Price',
+                iconAdmin: <GiWorld size={24} color="#000055" />,
             },
         ]
     },
@@ -140,12 +145,12 @@ export const sidebarMenuManager = [
             },
             {
                 path: 'Employee',
-                text: 'Employee',
+                text: 'Staff Revenue',
                 iconAdmin: <CgUserList size={24} color="#000055" />
             },
             {
                 path: 'Stall',
-                text: 'Stall',
+                text: 'Stall Revenue',
                 iconAdmin: <GrDocumentStore size={24} color="#000055" />
             }
 

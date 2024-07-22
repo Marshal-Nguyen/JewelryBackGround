@@ -23,8 +23,6 @@ const SildebarManager = () => {
         localStorage.clear();
 
     }
-
-
     return (
         <div className="bg-white text-black flex flex-col w-60 h-full">
             <div className="w-full mb-14 h-20 py-12 flex flex-col gap-2 font-serif text-blue-800 text-2xl justify-center items-center ">

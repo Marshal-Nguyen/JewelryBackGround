@@ -44,8 +44,6 @@ const SidebarRight = () => {
   const CusPoint = useSelector(state => state.cart.CusPoint);
   const Rate = useSelector(state => state.cart.Rate);
 
-
-
   const handleSubmitOrder = async (isDraft = false) => {
     // Create a new object for ProductCodesAndPromotionIds with 0 values replaced by null
     const adjustedProductCodesAndPromotionIds = Object.fromEntries(

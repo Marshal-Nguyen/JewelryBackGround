@@ -65,8 +65,19 @@ const StaffDetail = () => {
     useEffect(() => {
         const fetchStaffData = async () => {
             try {
-                const staffRes = await axios.get(`https://jssatsproject.azurewebsites.net/api/staff/getStaffSymmary?id=${id}&startDate=${startDate}&endDate=${endDate}`);
-                console.log('checkkkkkkkkkkkkkkkk', staffRes.data.data)
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error("No token found");
+                }
+                const staffRes = await axios.get(
+                    `https://jssatsproject.azurewebsites.net/api/staff/getStaffSymmary?id=${id}&startDate=${startDate}&endDate=${endDate}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+                console.log('checkkkkkkkkkkkkkkkk', staffRes.data.data);
                 if (staffRes && staffRes.data) {
                     setStaffData(staffRes.data.data);
                 }
@@ -77,27 +88,47 @@ const StaffDetail = () => {
 
         const fetchSellOrderData = async () => {
             try {
-                const sellOrderRes = await axios.get(`https://jssatsproject.azurewebsites.net/api/staff/getSellOrderByStaffId?id=${id}&pageSize=${pageSize}&pageIndex=${currentPage}&startDate=${startDate}&endDate=${endDate}`);
-                // console.log('>>>>>>chekc', sellOrderRes.data.data)
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error("No token found");
+                }
+                const sellOrderRes = await axios.get(
+                    `https://jssatsproject.azurewebsites.net/api/staff/getSellOrderByStaffId?id=${id}&pageSize=${pageSize}&pageIndex=${currentPage}&startDate=${startDate}&endDate=${endDate}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
                 if (sellOrderRes && sellOrderRes.data && sellOrderRes.data.data) {
                     setSellOrderData(sellOrderRes.data.data);
                     setTotalPagesSell(sellOrderRes.data.totalPages);
-                    // setTotalPages(sellOrderRes.data.totalPages);
                 }
             } catch (error) {
                 console.error('Error fetching sell orders:', error);
             }
         };
+
         const fetchBuyOrderData = async () => {
             try {
-                const buyOrderRes = await axios.get(`https://jssatsproject.azurewebsites.net/api/staff/getBuyOrdersStaffId?id=${id}&pageSize=${pageSize}&pageIndex=${currentPage}&startDate=${startDate}&endDate=${endDate}`);
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error("No token found");
+                }
+                const buyOrderRes = await axios.get(
+                    `https://jssatsproject.azurewebsites.net/api/staff/getBuyOrdersStaffId?id=${id}&pageSize=${pageSize}&pageIndex=${currentPage}&startDate=${startDate}&endDate=${endDate}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
                 if (buyOrderRes && buyOrderRes.data && buyOrderRes.data.data) {
                     setBuyOrderData(buyOrderRes.data.data);
                     setTotalPagesBuy(buyOrderRes.data.totalPages);
-                    // setTotalPages(buyOrderRes.data.totalPages);
                 }
             } catch (error) {
-                console.error('Error fetching sell orders:', error);
+                console.error('Error fetching buy orders:', error);
             }
         };
 
@@ -110,7 +141,6 @@ const StaffDetail = () => {
                 fetchSellOrderData();
                 fetchBuyOrderData();
             }
-            // console.log('>>>> gtessttt', totalPages)
         }
     }, [id, currentPage, pageSize, activeTab, searchQuery]);
     // 'sellOrder', 'buyOrder', 'payment'

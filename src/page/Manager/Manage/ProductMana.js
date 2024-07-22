@@ -137,7 +137,7 @@ const ProductMana = () => {
     return (
         <div className="flex items-center justify-center min-h-screen">
             <div>
-                <h1 className="text-2xl font-bold text-center mb-4">List of jewelry</h1>
+                <h1 className="text-2xl font-bold text-center mb-4">List Of Jewelry</h1>
                 <div className="flex mb-4">
                     <div className="relative">
                         <input

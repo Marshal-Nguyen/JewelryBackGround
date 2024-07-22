@@ -177,17 +177,50 @@ const StaffMana = () => {
 
     const validateForm = () => {
         let tempErrors = {};
-        if (!selectedStaff.firstname) tempErrors.firstname = 'First name is required';
-        if (!selectedStaff.lastname) tempErrors.lastname = 'Last name is required';
-        if (!selectedStaff.phone) tempErrors.phone = 'Phone is required';
-        else if (!validatePhoneNumber(selectedStaff.phone)) tempErrors.phone = 'Invalid phone number';
-        if (!selectedStaff.email) tempErrors.email = 'Email is required';
-        if (!selectedStaff.address) tempErrors.address = 'Address is required';
-        if (!selectedStaff.gender) tempErrors.gender = 'Gender is required';
-        if (!selectedStaff.status) tempErrors.status = 'Status is required';
+
+        // Function to check if each word in a string is alphabetic with the first letter capitalized
+        const isEachWordAlphaWithFirstLetterCapitalized = (str) => {
+            return str.split(' ').every(word => /^[A-Z][a-z]*$/.test(word));
+        };
+
+        if (!selectedStaff.firstname) {
+            tempErrors.firstname = 'First name is required';
+        } else if (!isEachWordAlphaWithFirstLetterCapitalized(selectedStaff.firstname)) {
+            tempErrors.firstname = 'First name must be alphabetic with the first letter capitalized';
+        }
+
+        if (!selectedStaff.lastname) {
+            tempErrors.lastname = 'Last name is required';
+        } else if (!isEachWordAlphaWithFirstLetterCapitalized(selectedStaff.lastname)) {
+            tempErrors.lastname = 'Last name must be alphabetic with each word capitalized';
+        }
+
+        if (!selectedStaff.phone) {
+            tempErrors.phone = 'Phone is required';
+        } else if (!validatePhoneNumber(selectedStaff.phone)) {
+            tempErrors.phone = 'Invalid phone number';
+        }
+
+        if (!selectedStaff.email) {
+            tempErrors.email = 'Email is required';
+        }
+
+        if (!selectedStaff.address) {
+            tempErrors.address = 'Address is required';
+        }
+
+        if (!selectedStaff.gender) {
+            tempErrors.gender = 'Gender is required';
+        }
+
+        if (!selectedStaff.status) {
+            tempErrors.status = 'Status is required';
+        }
+
         setErrors(tempErrors);
         return Object.keys(tempErrors).length === 0;
     };
+
     const handleSaveChanges = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -238,7 +271,7 @@ const StaffMana = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-white mx-5 pt-5 mb-5 rounded">
             <div>
-                <h1 className="text-3xl font-bold text-center text-blue-800 mb-4">Staff management list</h1>
+                <h1 className="text-3xl font-bold text-center text-blue-800 mb-4">Staff Management List</h1>
                 <div className="flex justify-between mb-4">
                     <div className="flex items-center ml-2">
                         <label className="block mb-1 mr-2">Page Size:</label>
@@ -468,7 +501,7 @@ const StaffMana = () => {
                                     <option value="female">Female</option>
                                 </select>
                             </div>
-                            {/* <div className="mb-4">
+                            <div className="mb-4">
                                 <label className="block text-gray-700">Status:</label>
                                 <select
                                     name="status"
@@ -479,7 +512,7 @@ const StaffMana = () => {
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
                                 </select>
-                            </div> */}
+                            </div>
                             <div className="flex justify-end">
                                 <button
                                     type="button"

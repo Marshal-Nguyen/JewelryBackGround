@@ -4,12 +4,10 @@ import clsx from 'clsx';
 import { IoIosSearch } from 'react-icons/io';
 import { CiViewList } from 'react-icons/ci';
 import Modal from 'react-modal';
-import logoRing from '../../../assets/img/seller/ring.png';
-import logoEarrings from '../../../assets/img/seller/earring.png';
-import logoNecklace from '../../../assets/img/seller/necklace.png';
-import logoBracelet from '../../../assets/img/seller/bangles.png';
+
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { FiEdit3 } from "react-icons/fi";
 const JewelryManager = () => {
     const scrollRef = useRef(null);
     const navigate = useNavigate();
@@ -28,7 +26,7 @@ const JewelryManager = () => {
     const [selectedCategory, setSelectedCategory] = useState(1); // Default category ID
     const [totalPages, setTotalPages] = useState(1);
     const [ascending, setAscending] = useState(true);
-
+    const [updateOrDetail, setUpdateOrDetail] = useState('');
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -72,7 +70,7 @@ const JewelryManager = () => {
         setSearchQuery1('')
         setCurrentPage(1);
     }
-    const handleDetailClick = async (code, diamondCode) => {
+    const handleDetailClick = async (code, diamondCode, updateordetail) => {
         try {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -93,8 +91,9 @@ const JewelryManager = () => {
                 const details1 = res1.data.data[0];
                 setSelectedDiamond(details);
                 setSelectedProduct(details1); // Set selected product for editing
-                console.log('>>> check diamond', res)
-                console.log('>>> check product', res)
+                // console.log('>>> check diamond', res)
+                // console.log('>>> check product', res)
+                setUpdateOrDetail(updateordetail);
                 setIsModalOpen(true); // Open modal when product details are fetched
             }
 
@@ -229,6 +228,9 @@ const JewelryManager = () => {
 
     const closeModal = () => {
         setIsModalOpen(false);
+        setSelectedDiamond(null);
+        setSelectedProduct(null);
+        setUpdateOrDetail('');
     };
     const formatUpper = (str) => {
         if (!str) return '';
@@ -255,7 +257,7 @@ const JewelryManager = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-white mx-5 pt-5 mb-5 rounded">
             <div>
-                <h1 ref={scrollRef} className="text-3xl font-bold text-center text-blue-800 mb-4">List of Jewelry</h1>
+                <h1 ref={scrollRef} className="text-3xl font-bold text-center text-blue-800 mb-4">List Of Jewelry</h1>
 
                 <div className="flex justify-between items-center">
                     <div className="ml-2">
@@ -347,6 +349,7 @@ const JewelryManager = () => {
                                 <th className="rounded-r-lg">Action</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             {listProduct.map((item, index) => (
                                 <tr key={index} className="cursor-pointer font-normal text-black bg-white shadow-md rounded font-bold text-base hover:shadow-2xl">
@@ -370,11 +373,14 @@ const JewelryManager = () => {
                                             <span className="text-green-500 bg-green-100 font-bold p-1 px-2 rounded-xl">ACTIVE</span>
                                         ) : item.status === 'inactive' ? (
                                             <span className="text-red-500 bg-red-100 font-bold p-1 px-2 rounded-xl">INACTIVE</span>
-                                        ) : 'null'
+                                        ) : item.status === 'repurchased' ? (
+                                            <span className="text-zinc-500 bg-zinc-100 font-bold p-1 px-2 rounded-xl">REPURCHASED</span>
+                                        ) : item.status
                                         }
                                     </td>
-                                    <td className="text-3xl text-[#000099] pl-4">
-                                        <CiViewList onClick={() => handleDetailClick(item.code, item.diamondCode)} />
+                                    <td className="flex space-x-2 mt-8">
+                                        <CiViewList className="text-3xl text-[#000099]" onClick={() => handleDetailClick(item.code, item.diamondCode, 'detail')} />
+                                        {item.status === 'active' && <FiEdit3 className="text-3xl text-green-500" onClick={() => handleDetailClick(item.code, item.diamondCode, 'update')} />}
                                     </td>
                                 </tr>
                             ))}
@@ -416,100 +422,156 @@ const JewelryManager = () => {
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
                 contentLabel="Product Details"
-                className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto"
+                className="bg-white p-6 rounded-lg shadow-lg mx-auto"
                 overlayClassName="fixed inset-0 z-30 bg-black bg-opacity-50 flex justify-center items-center"
             >
                 {selectedProduct && (
                     <div className="fixed inset-0 flex items-center justify-center z-10 bg-gray-800 bg-opacity-50">
-                        <div className="bg-white rounded-lg p-8 max-w-md w-full">
-                            {selectedDiamond && (<>
-                                <h2 className="text-xl text-blue-600 text-center font-bold mb-4">
-                                    {selectedDiamond.name}
+                        {/* <div className="bg-white rounded-lg p-8  w-[800px]"> */}
+                        {updateOrDetail === 'detail' && (
+                            <div className="bg-white rounded-lg p-8  w-[800px]">
+                                <h2 className="text-2xl text-blue-800 text-center font-bold mb-4">
+                                    {selectedProduct.name}
                                 </h2>
-                                <p>
-                                    <strong>ID:</strong> {selectedDiamond.id}
-                                </p>
-                                <p>
-                                    <strong>Code:</strong> {selectedDiamond.code}
-                                </p>
-                                <p>
-                                    <strong>Origin:</strong> {selectedDiamond.originName}
-                                </p>
-                                <p>
-                                    <strong>Shape:</strong> {selectedDiamond.shapeName}
-                                </p>
-                                <p>
-                                    <strong>Fluorescence:</strong> {selectedDiamond.fluorescenceName}
-                                </p>
-                                <p>
-                                    <strong>Color:</strong> {selectedDiamond.colorName}
-                                </p>
-                                <p>
-                                    <strong>Symmetry:</strong> {selectedDiamond.symmetryName}
-                                </p>
-                                <p>
-                                    <strong>Polish:</strong> {selectedDiamond.polishName}
-                                </p>
-                                <p>
-                                    <strong>Cut:</strong> {selectedDiamond.cutName}
-                                </p>
-                                <p>
-                                    <strong>Clarity:</strong> {selectedDiamond.clarityName}
-                                </p>
-                                <p>
-                                    <strong>Carat:</strong> {selectedDiamond.caratWeight}
-                                </p></>
-                            )}
-                            <form className="mt-4">
-                                <div className="mb-2">
-                                    <label className="block text-lg font-medium ">
-                                        <strong>Stall: </strong>
-                                    </label>
-                                    <select
-                                        name="stallsId"
-                                        value={selectedProduct?.stalls?.id ?? ''}
-                                        onChange={(e) => {
-                                            const value = e.target.value === 'null' ? null : e.target.value;
-                                            setSelectedProduct((prevSelectedProduct) => ({
-                                                ...prevSelectedProduct,
-                                                stalls: {
-                                                    id: value
-                                                }
-                                            }));
-                                        }}
-                                        className="px-3 py-2 border border-gray-300 rounded-md w-full"
-                                    >
-                                        <option value="" disabled selected>
-                                            {selectedProduct.stalls ? selectedProduct.stalls.name : 'null'}
-                                        </option>
-                                        {stalls
-                                            .filter(stall => stall.description === 'jewelry' || stall.description === 'counter')
-                                            .map(stall => (
-                                                <option key={stall.id} value={stall.id}>
-                                                    {stall.name} - {stall.description && formatUpper(stall.description)}
-                                                </option>
-                                            ))}
-                                        <option value="null">Null</option>
-                                    </select>
+                                <div className="grid grid-cols-2 gap-1">
+                                    <div className={`grid grid-cols-2 ${!selectedDiamond ? 'col-span-2' : ''}`}>
+                                        <p className="border p-2"><strong>ID:</strong></p>
+                                        <p className="border p-2">{selectedProduct.id}</p>
+
+                                        <p className="border p-2"><strong>Category Name:</strong></p>
+                                        <p className="border p-2">{selectedProduct.categoryName}</p>
+
+                                        <p className="border p-2"><strong>Code:</strong></p>
+                                        <p className="border p-2">{selectedProduct.code}</p>
+
+                                        <p className="border p-2"><strong>Price:</strong></p>
+                                        <p className="border p-2">{formatCurrency(selectedProduct.productValue)}</p>
+
+                                        <p className="border p-2"><strong>Stall:</strong></p>
+                                        <p className="border p-2">{selectedProduct.stalls.name || 'Null'}</p>
+
+                                        <p className="border p-2"><strong>Status:</strong></p>
+                                        <p className="border p-2">
+                                            {selectedProduct.status === 'active' ? (
+                                                <span className="text-green-500 bg-green-100 font-bold p-1 px-2 rounded-xl">ACTIVE</span>
+                                            ) : selectedProduct.status === 'inactive' ? (
+                                                <span className="text-red-500 bg-red-100 font-bold p-1 px-2 rounded-xl">INACTIVE</span>
+                                            ) : selectedProduct.status === 'repurchased' ? (
+                                                <span className="text-zinc-500 bg-zinc-100 font-bold p-1 px-2 rounded-xl">REPURCHASED</span>
+                                            ) : selectedProduct.status
+                                            }
+                                        </p>
+
+                                    </div>
+                                    {selectedDiamond && (<>
+                                        {/* <h1>Diamond detail</h1> */}
+                                        <div className="grid grid-cols-2">
+                                            {/* <p className=" text-center text-xl text-blue-600 font-bold">Diamond detail:</p>
+                                                    <p className=""></p> */}
+
+                                            <p className="border p-2"><strong>Name:</strong></p>
+                                            <p className="border p-2">{selectedDiamond.name}</p>
+
+                                            <p className="border p-2"><strong>ID:</strong></p>
+                                            <p className="border p-2">{selectedDiamond.id}</p>
+
+                                            <p className="border p-2"><strong>Code:</strong></p>
+                                            <p className="border p-2">{selectedDiamond.code}</p>
+
+                                            <p className="border p-2"><strong>Origin:</strong></p>
+                                            <p className="border p-2">{selectedDiamond.originName}</p>
+
+                                            <p className="border p-2"><strong>Shape:</strong></p>
+                                            <p className="border p-2">{selectedDiamond.shapeName}</p>
+
+                                            <p className="border p-2"><strong>Fluorescence:</strong></p>
+                                            <p className="border p-2">{selectedDiamond.fluorescenceName}</p>
+
+                                            <p className="border p-2"><strong>Color:</strong></p>
+                                            <p className="border p-2">{selectedDiamond.colorName}</p>
+
+                                            <p className="border p-2"><strong>Symmetry:</strong></p>
+                                            <p className="border p-2">{selectedDiamond.symmetryName}</p>
+
+                                            <p className="border p-2"><strong>Polish:</strong></p>
+                                            <p className="border p-2">{selectedDiamond.polishName}</p>
+
+                                            <p className="border p-2"><strong>Cut:</strong></p>
+                                            <p className="border p-2">{selectedDiamond.cutName}</p>
+
+                                            <p className="border p-2"><strong>Clarity:</strong></p>
+                                            <p className="border p-2">{selectedDiamond.clarityName}</p>
+
+                                            <p className="border p-2"><strong>Carat:</strong></p>
+                                            <p className="border p-2">{selectedDiamond.caratWeight}</p>
+                                        </div>
+                                    </>
+                                    )
+                                    }
                                 </div>
-                            </form>
-                            <div className="flex">
-                                <button
-                                    onClick={handleYesNo}
-                                    className="mr-2 px-4 py-2 bg-blue-500 text-white rounded-md"
-                                    style={{ width: '5rem' }}
-                                >
-                                    Save
-                                </button>
-                                <button
-                                    onClick={closeModal}
-                                    className="mr-2 ml-0 px-4 py-2 bg-gray-500 text-white rounded-md"
-                                    style={{ width: '5rem' }}
-                                >
-                                    Close
-                                </button>
-                            </div>
-                        </div>
+                                <div className="">
+                                    <button
+                                        onClick={closeModal}
+                                        className="px-4 py-2 bg-blue-500 text-white rounded-md"
+                                        style={{ width: '5rem' }}
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>)}
+                        {updateOrDetail === 'update' && (
+                            <div className="bg-white rounded-lg p-8  w-[400px]">
+                                <form className="mt-4">
+                                    <div className="mb-2">
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            Stall
+                                        </label>
+                                        <select
+                                            name="stallsId"
+                                            value={selectedProduct?.stalls?.id ?? ''}
+                                            onChange={(e) => {
+                                                const value = e.target.value === 'null' ? null : e.target.value;
+                                                setSelectedProduct((prevSelectedProduct) => ({
+                                                    ...prevSelectedProduct,
+                                                    stalls: {
+                                                        id: value
+                                                    }
+                                                }));
+                                            }}
+                                            className="px-3 py-2 border border-gray-300 rounded-md w-full"
+                                        >
+                                            <option value="" disabled selected>
+                                                {selectedProduct.stalls ? selectedProduct.stalls.name : 'null'}
+                                            </option>
+                                            {stalls
+                                                .filter(stall => stall.description === 'jewelry' || stall.description === 'counter')
+                                                .map(stall => (
+                                                    <option key={stall.id} value={stall.id}>
+                                                        {stall.name} - {stall.description && formatUpper(stall.description)}
+                                                    </option>
+                                                ))}
+                                            <option value="null">Null</option>
+                                        </select>
+
+                                    </div>
+                                </form>
+                                <div className="flex">
+                                    <button
+                                        onClick={handleYesNo}
+                                        className="mr-2 px-4 py-2 bg-blue-500 text-white rounded-md"
+                                        style={{ width: '5rem' }}
+                                    >
+                                        Save
+                                    </button>
+                                    <button
+                                        onClick={closeModal}
+                                        className="mr-2 ml-0 px-4 py-2 bg-gray-500 text-white rounded-md"
+                                        style={{ width: '5rem' }}
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>)}
                     </div>
                 )}
             </Modal>

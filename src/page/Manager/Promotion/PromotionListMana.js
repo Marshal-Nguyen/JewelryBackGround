@@ -7,10 +7,10 @@ import axios from "axios";
 import clsx from 'clsx';
 import { toast } from 'react-toastify';
 import { CiViewList } from "react-icons/ci";
-
+import { FiEdit3 } from "react-icons/fi";
 const PromotionListMana = () => {
     const scrollRef = useRef(null);
-
+    const [isYesNoOpen, setIsYesNoOpen] = useState(false);
     const [listPromotion, setListPromotion] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
@@ -21,7 +21,7 @@ const PromotionListMana = () => {
     const promotionPerPageOptions = [10, 15, 20, 25, 30, 35, 40, 45, 50];
     const [searchQuery1, setSearchQuery1] = useState(''); // when click icon => search, if not click => not search
     const [ascending, setAscending] = useState(false);
-
+    const [updateOrDetail, setUpdateOrDetail] = useState('');
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -134,22 +134,35 @@ const PromotionListMana = () => {
         return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`;
     };
 
-    const handleDetailClick = (promotion) => {
+    const handleDetailClick = (promotion, status) => {
         setSelectedPromotion(promotion);
+        setUpdateOrDetail(status)
     };
 
     const handleSaveChanges = async () => {
         try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error("No token found");
+            }
+
             const res = await axios.put(
                 `https://jssatsproject.azurewebsites.net/api/promotion/Updatepromotion?id=${selectedPromotion.id}`,
-                selectedPromotion
+                selectedPromotion,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
             );
+
             if (res.status === 200) {
                 const updatedPromotions = listPromotion.map((promotion) =>
                     promotion.id === selectedPromotion.id ? selectedPromotion : promotion
                 );
                 setListPromotion(updatedPromotions);
                 setIsModalOpen(false);
+                setIsYesNoOpen(false);
                 setSelectedPromotion(null);
                 toast.success("Promotion updated successfully");
             }
@@ -159,12 +172,13 @@ const PromotionListMana = () => {
         }
     };
 
+
     const placeholders = Array.from({ length: pageSize - listPromotion.length });
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-white mx-5 pt-5 mb-5 rounded">
             <div>
-                <h1 ref={scrollRef} className="text-3xl font-bold text-center text-blue-800 mb-4">Promotion list</h1>
+                <h1 ref={scrollRef} className="text-3xl font-bold text-center text-blue-800 mb-4">Promotion List</h1>
                 <div className="flex justify-between mb-4">
                     <div className="flex items-center ml-2">
                         <label className="block mb-1 mr-2">Page Size:</label>
@@ -221,8 +235,11 @@ const PromotionListMana = () => {
                                         )
                                         }
                                     </td>
-                                    <td className="text-3xl text-[#000099] pl-2"><CiViewList onClick={() => handleDetailClick(item)} /></td>
-
+                                    {/* <td className="text-3xl text-[#000099] pl-2"><CiViewList onClick={() => handleDetailClick(item)} /></td> */}
+                                    <td className="flex space-x-2 mt-3">
+                                        <CiViewList className="text-3xl text-[#000099]" onClick={() => handleDetailClick(item, 'detail')} />
+                                        <FiEdit3 className="text-3xl text-green-500" onClick={() => handleDetailClick(item, 'update')} />
+                                    </td>
                                 </tr>
                             ))}
                             {placeholders.map((_, index) => (
@@ -258,57 +275,95 @@ const PromotionListMana = () => {
             {selectedPromotion && !isModalOpen && (
                 <div className="fixed inset-0 z-30 flex items-center justify-center z-10 bg-gray-800 bg-opacity-50">
                     <div className="bg-white rounded-lg p-8 max-w-md w-full">
-                        <h2 className="text-xl font-bold text-blue-600 text-center mb-4">{selectedPromotion.name}</h2>
-                        <p className="text-base text-gray-700 mb-2"> <strong>ID:</strong> {selectedPromotion.id}</p>
-                        <p className="text-base text-gray-700 mb-2"><strong>Discount Rate: </strong>{selectedPromotion.discountRate}</p>
-                        <p className="text-base text-gray-700 mb-2"><strong>Description: </strong>{selectedPromotion.description}</p>
-                        <p className="text-base text-gray-700 mb-2"><strong>Start Date: </strong>{format(new Date(selectedPromotion.startDate), 'dd/MM/yyyy')}</p>
-                        <p className="text-base text-gray-700 mb-2"><strong>End Date:</strong> {format(new Date(selectedPromotion.endDate), 'dd/MM/yyyy')}</p>
-                        <div >
-                            <p className="text-base text-gray-700 mb-2"><strong>Categories:</strong></p>
-                            <ul className="list-disc list-inside">
-                                {selectedPromotion.categories.map((category, index) => (
-                                    <li key={index} className="text-sm">{category.name}</li>
-                                ))}
-                            </ul>
-                        </div>
-                        {/* <p className="text-base text-gray-700 mb-2"><strong>Status: </strong>
-                            {selectedPromotion.status === 'active'
-                                ? (<span className="text-green-500 font-bold">Active</span>)
-                                : <span className="text-red-500">Inactive</span>}
-                        </p> */}
-                        <select
-                            value={selectedPromotion.status}
+                        {updateOrDetail === 'detail' && (
+                            <>
+                                <h2 className="text-xl font-bold text-blue-600 text-center mb-4">{selectedPromotion.name}</h2>
+                                <p className="text-base text-gray-700 mb-2"> <strong>ID:</strong> {selectedPromotion.id}</p>
+                                <p className="text-base text-gray-700 mb-2"><strong>Discount Rate: </strong>{selectedPromotion.discountRate}</p>
+                                <p className="text-base text-gray-700 mb-2"><strong>Description: </strong>{selectedPromotion.description}</p>
+                                <p className="text-base text-gray-700 mb-2"><strong>Start Date: </strong>{format(new Date(selectedPromotion.startDate), 'dd/MM/yyyy')}</p>
+                                <p className="text-base text-gray-700 mb-2"><strong>End Date:</strong> {format(new Date(selectedPromotion.endDate), 'dd/MM/yyyy')}</p>
+                                <div >
+                                    <p className="text-base text-gray-700 mb-2"><strong>Categories:</strong></p>
+                                    <ul className="list-disc list-inside">
+                                        {selectedPromotion.categories.map((category, index) => (
+                                            <li key={index} className="text-sm">{category.name}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <p className="text-base text-gray-700 my-2"><strong>Status: </strong>
+                                    {selectedPromotion.status === 'active' ? (
+                                        <span className="text-green-500 bg-green-100 font-bold p-1 px-2 rounded-xl">ACTIVE</span>
+                                    ) : selectedPromotion.status === 'inactive' ? (
+                                        <span className="text-red-500 bg-red-100 font-bold p-1 px-2 rounded-xl">INACTIVE</span>
+                                    ) : selectedPromotion.status
+                                    }
+                                </p>
+                                <button
+                                    className="px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => setSelectedPromotion(null)}
+                                >
+                                    Close
+                                </button>
+                            </>
+                        )}
+                        {updateOrDetail === 'update' && (
+                            <>
+                                <h2 className="text-xl font-bold text-blue-600 text-center mb-4">Update status of promotion</h2>
+                                <select
+                                    value={selectedPromotion.status}
 
-                            onChange={(e) => setSelectedPromotion({ ...selectedPromotion, status: e.target.value })}
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-                        >
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                        <div className='flex'>
-                            <button
-                                className="mr-2 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => handleSaveChanges()}
-                            >
-                                Save
-                            </button>
-                            <button
-                                className="mr-2 ml-0 px-4 py-2 bg-gray-500 text-white rounded-md" onClick={() => setSelectedPromotion(null)}
-                            >
-                                Close
-                            </button>
-                        </div>
-                        {/* <div className='flex justify-end mt-6'>
-
-                            <button
-                                className="px-6 py-3 bg-blue-500 text-white rounded" onClick={() => setSelectedPromotion(null)}
-                            >
-                                Close
-                            </button>
-                        </div> */}
+                                    onChange={(e) => setSelectedPromotion({ ...selectedPromotion, status: e.target.value })}
+                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                                >
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                                <div className='flex'>
+                                    <button
+                                        className="mr-2 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => setIsYesNoOpen(true)}
+                                    >
+                                        Save
+                                    </button>
+                                    <button
+                                        className="mr-2 ml-0 px-4 py-2 bg-gray-500 text-white rounded-md" onClick={() => setSelectedPromotion(null)}
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             )}
+            {
+                isYesNoOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+                        <div className="bg-white rounded-lg p-8 max-w-md w-full">
+                            <h2 className="text-2xl font-bold text-black mb-4">Confilm to update</h2>
+                            <p>Are you sure to update this promotion's status</p>
+
+                            <div className="flex justify-end">
+                                <button
+                                    type="button"
+                                    className="mr-2 px-4 py-2 bg-blue-500 text-white rounded-md"
+                                    onClick={() => handleSaveChanges()}
+                                >
+                                    Yes
+                                </button>
+                                <button
+                                    type="button"
+                                    className="mr-2 ml-0 px-4 py-2 bg-red-500 text-white rounded-md"
+                                    onClick={() => setIsYesNoOpen(false)}
+                                >
+                                    No
+                                </button>
+                            </div>
+
+
+                        </div>
+                    </div>
+                )
+            }
 
         </div>
     );

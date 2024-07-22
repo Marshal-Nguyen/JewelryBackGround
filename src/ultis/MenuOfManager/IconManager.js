@@ -33,7 +33,9 @@ import { GiStoneBlock } from "react-icons/gi";
 import { TbBasketDiscount } from "react-icons/tb";// special discount request
 import { MdOutlinePayments } from "react-icons/md";// payment
 import { RiCopperDiamondLine } from "react-icons/ri";
+import { GiWorld } from "react-icons/gi";
 const IconManager = {
+    GiWorld,
     RiCopperDiamondLine,
     MdOutlinePayments,
     TbBasketDiscount,
