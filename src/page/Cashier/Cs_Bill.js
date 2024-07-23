@@ -32,11 +32,25 @@ const Cs_Bill = () => {
   };
   const getRing = async (id) => {
     try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+          throw new Error('No token found')
+      }
       const res = await axios.get(
-        `https://jssatsproject.azurewebsites.net/api/sellorder/getbyid?id=${id}`
+        `https://jssatsproject.azurewebsites.net/api/sellorder/getbyid?id=${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+        }
+        }
       );
       const cus = await axios.get(
-        `https://jssatsproject.azurewebsites.net/api/Customer/Search?searchTerm=${res.data.data[0].customerPhoneNumber}&pageIndex=1&pageSize=10`
+        `https://jssatsproject.azurewebsites.net/api/Customer/Search?searchTerm=${res.data.data[0].customerPhoneNumber}&pageIndex=1&pageSize=10`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+        }
+        }
       );
       setCus(cus.data.data[0])
       console.log(res.data.data[0])

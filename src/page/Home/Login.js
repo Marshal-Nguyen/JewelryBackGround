@@ -105,7 +105,7 @@ export default function LoginToStore() {
           Login
         </button>
       </div>
-      <div className="bg-white bg-opacity-20 flex justify-center backdrop-blur-md p-8 rounded-lg shadow-lg w-full max-w-md">
+      {/* <div className="bg-white bg-opacity-20 flex justify-center backdrop-blur-md p-8 rounded-lg shadow-lg w-full max-w-md">
        
             <table class="w-full bg-opacity-5 bg-white border-collapse border border-gray-300">
               <thead>
@@ -138,7 +138,7 @@ export default function LoginToStore() {
                 </tr>
               </tbody>
             </table>
-          </div>
+          </div> */}
     </div>
   );
 }
