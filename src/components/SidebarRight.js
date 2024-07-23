@@ -95,10 +95,10 @@ const SidebarRight = () => {
         if (!token) {
           throw new Error('No token found')
         }
-        if (specialDiscountRate !== 0) {
-          toast.error('Must be Temporary');
-          return;
-        }
+        // if (specialDiscountRate !== 0) {
+        //   toast.error('Must be Temporary');
+        //   return;
+        // }
        
         await axios.put(`https://jssatsproject.azurewebsites.net/api/SellOrder/UpdateStatus?id=${res.data.id}`, {
           status: 'waiting for customer payment',

@@ -271,7 +271,7 @@ const Cs_WaitingPayment = () => {
         setIsPaymentCompletedDefault(false);
         //thêm api 
         if (ChosePayMethodID === 3) {
-          handleCompleteCash(item1, item.customerPhoneNumber);
+          handleCompleteCash(item1, item.customerPhoneNumber,item.id);
         } else if (ChosePayMethodID === 4) {
           handleCompleteVnPay(item1);
         }
@@ -309,7 +309,7 @@ const Cs_WaitingPayment = () => {
       );
       console.log('Đã có payment id', res.data.data);
       if (ChosePayMethodID === 3) {
-        handleCompleteCash(res.data.data, item.customerPhoneNumber);
+        handleCompleteCash(res.data.data, item.customerPhoneNumber,item.id);
       } else if (ChosePayMethodID === 4) {
         handleCompleteVnPay(res.data.data);
       }
@@ -326,8 +326,8 @@ const Cs_WaitingPayment = () => {
       customerId: item.customerId,
       createDate: createDate,
       amount: item.amount,
-       returnUrl: 'https://jewelrystore-marshal-nguyens-projects.vercel.app/cs_public/payment-result'
-      // returnUrl: 'http://localhost:3000/cs_public/payment-result'
+      // returnUrl: 'https://jewelrystore-marshal-nguyens-projects.vercel.app/cs_public/payment-result'
+     returnUrl: 'http://localhost:3000/cs_public/payment-result'
 
     };
     console.log('VNPay request', data);
@@ -371,7 +371,42 @@ const Cs_WaitingPayment = () => {
     };
   }, []);
 
-  const handleCompleteCash = async (item, phone) => {
+  const Mail = async (orderId) => {
+    console.log('order',orderId)
+    const token = localStorage.getItem('token')
+    if (!token) {
+        throw new Error('No token found')
+    }
+    let res = await axios.get(`https://jssatsproject.azurewebsites.net/api/sellorder/getbyid?id=${orderId}`,{
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    const resdata = res.data.data[0]
+    console.log('resdata',resdata)
+    let customer = await axios.get(`https://jssatsproject.azurewebsites.net/api/Customer/Search?searchTerm=${resdata.customerPhoneNumber}`,{
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    let data = {
+        toAddress: customer.data.data[0].email,
+        subject:'Electronic invoice of Jewelry Store',
+        sellOrderId: orderId,
+        totalPrice: resdata.finalAmount,
+        promotionDiscount:calculateTotalPromotionValue(resdata),
+        pointDiscount: resdata.discountPoint,
+    }
+    console.log('RES',resdata)
+    console.log('CUS',customer)
+    console.log('mail',data)
+    await axios.post('https://jssatsproject.azurewebsites.net/api/Mail/Send', data,{
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+}
+  const handleCompleteCash = async (item, phone,orderID) => {
     let data = {
       paymentId: item.id,
       paymentMethodId: ChosePayMethodID,
@@ -393,8 +428,10 @@ const Cs_WaitingPayment = () => {
           }
         }
       );
+      console.log('Cassh', res)
       toast.success('Cash payment successful');
       // getCompletedSearch(phone);
+      Mail(orderID)
     } catch (error) {
       toast.error('Fail');
       console.error('Error invoice:', error);

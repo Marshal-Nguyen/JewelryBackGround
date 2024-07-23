@@ -321,7 +321,7 @@ const Customer = () => {
                   </div>
                   <div className="col-span-2 sm:col-span-1">
                     <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
-                    <input value={address} onChange={(event) => setAddress(event.target.value)} type="text" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Jewelry Store" required />
+                    <input value={address} onChange={(event) => setAddress(event.target.value)} type="text" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Address" required />
                   </div>
                   <div className="col-span-2 sm:col-span-1">
                     <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
